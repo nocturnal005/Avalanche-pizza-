@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+
+# Build
+build/
+dist/
+
+# Env & secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Vercel
+.vercel
+
+# Supabase local
+supabase/.temp/
+supabase/.branches/
+
+# Testing
+coverage/
+playwright-report/
+test-results/
+
+# Logs & OS noise
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# TypeScript
+*.tsbuildinfo

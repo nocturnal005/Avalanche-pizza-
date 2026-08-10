@@ -1,0 +1,259 @@
+<!DOCTYPE html><html lang="en" style="scroll-behavior: smooth;"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}
+
+/* Entrance Stagger Animations */
+@keyframes fadeSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Button Shimmer Effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.hover-shimmer:hover {
+  background: linear-gradient(90deg, transparent, rgba(255, 181, 158, 0.2), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+/* Scroll Trigger Animations */
+.reveal-item {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: opacity, transform;
+}
+
+.reveal-item.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hero-text-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1), transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.hero-text-reveal.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.parallax-bg {
+  will-change: transform;
+}
+
+/* Spotlight Effect */
+#spotlight {
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(255,181,158,0.03), transparent 40%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+body:hover #spotlight {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal-item, .hero-text-reveal {
+    transition: none !important;
+    opacity: 1;
+    transform: none;
+  }
+  .parallax-bg {
+    transform: none !important;
+  }
+  #spotlight {
+    display: none;
+  }
+  .animate-slide-down {
+    animation: none;
+  }
+}
+
+</style><link href="https://fonts.googleapis.com/css2?family=Metrophobic&amp;family=Manrope:wght@400;500&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"on-secondary-fixed":"#261a00","on-surface":"#e5e2e1","error":"#ffb4ab","on-primary-fixed":"#3a0b00","on-secondary":"#3f2e00","on-error-container":"#ffdad6","inverse-primary":"#ae3200","primary-fixed-dim":"#ffb59e","outline":"#ad897e","surface-container":"#201f1f","tertiary-fixed":"#ffdad4","surface-dim":"#131313","tertiary":"#ffb4a8","surface":"#131313","primary-fixed":"#ffdbd0","secondary-fixed":"#ffdf9e","surface-container-high":"#2a2a2a","surface-container-lowest":"#0e0e0e","surface-tint":"#ffb59e","error-container":"#93000a","on-tertiary":"#690000","on-primary-container":"#521300","on-tertiary-fixed-variant":"#920703","secondary-fixed-dim":"#fabd00","surface-container-highest":"#353534","on-primary-fixed-variant":"#852400","on-primary":"#5e1700","background":"#131313","on-surface-variant":"#e6beb2","tertiary-fixed-dim":"#ffb4a8","tertiary-container":"#fb5945","on-tertiary-fixed":"#410000","outline-variant":"#5c4037","surface-variant":"#353534","on-background":"#e5e2e1","secondary":"#ffdf9e","surface-bright":"#393939","on-secondary-container":"#6a4e00","secondary-container":"#fabd00","on-error":"#690005","surface-container-low":"#1c1b1b","on-tertiary-container":"#5c0000","primary":"#ffb59e","on-secondary-fixed-variant":"#5b4300","primary-container":"#ff571a","inverse-surface":"#e5e2e1","inverse-on-surface":"#313030"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"margin-mobile":"16px","container-max":"1280px","gutter":"24px","unit":"8px","margin-desktop":"64px"},"fontFamily":{"headline-lg-mobile":["Metrophobic"],"headline-lg":["Metrophobic"],"body-md":["Manrope"],"label-caps":["JetBrains Mono"],"body-lg":["Manrope"],"display-lg":["Metrophobic"]},"fontSize":{"headline-lg-mobile":["24px",{"lineHeight":"1.2","letterSpacing":"0.08em","fontWeight":"400"}],"headline-lg":["32px",{"lineHeight":"1.2","letterSpacing":"0.1em","fontWeight":"400"}],"body-md":["16px",{"lineHeight":"1.6","letterSpacing":"0.01em","fontWeight":"400"}],"label-caps":["12px",{"lineHeight":"1","letterSpacing":"0.2em","fontWeight":"500"}],"body-lg":["18px",{"lineHeight":"1.6","letterSpacing":"0.02em","fontWeight":"400"}],"display-lg":["48px",{"lineHeight":"1.1","letterSpacing":"0.15em","fontWeight":"400"}]}}}}</script></head><body class="bg-background font-body-md text-on-surface relative">
+<div id="spotlight" style="--mouse-x: 1147px; --mouse-y: 1232px;"></div>
+<header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.2)]"><div class="h-20 w-full px-margin-desktop flex items-center justify-between"><div class="flex items-center gap-4 ml-2 animate-slide-down"><a class="font-headline-lg uppercase tracking-widest text-body-lg text-on-surface" href="#"><img alt="Phoenix Logo" class="h-8 w-auto inline-block mr-2 align-middle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6Vv1u09YE6dqLKmT9O583gGRoW-dccGcfkIQj9z61sDUpT6AVKHlWh-Qp7g8aO7_-A-FU0bjDo69RkQu_ZtFttf86GMB86xOwiMeGM65NXr7Qmj6u80__wAZldaeBWPn-8UETBP7m2oTbfkwizi7iOdPsb5RgwyZpPgGUTcYq7XbuP2oRPrz-S31TA-eSGUTBQS36pcxOYEJ8o4iTOQFtMFMJf8JnDIg7AMF-T7iMG3CaX0chvyRiBNGoLXD7VLYCaE0" style="mix-blend-mode: screen;">AVALANCHE<img alt="Pizza Slice" class="h-8 w-auto inline-block ml-2 align-middle" src="https://lh3.googleusercontent.com/aida/AP1WRLsXQhKpY5UG1i04t2ZQIKjD4Q2mzA-gSmNKZMbRucUxmx-SFKVZ4B2uNwIs92pTRpKsBZ7g4T-Q0o0rVnv6TtACgX3xbP1f9O6BsfibM2PstyVUcQVj0WQ_v97yOzJHg4vRpL-DJlg4Tf1dYtQ1nte8_S53Aww3ASb6xGx_8GPwxlUcqPtKQ1QslIkz-pebtVyh5YnfBMPTYFnTpXGLzkFDazV30PTqLYy5nmPSofiXh8QwYn_8Vc5SZslY" style="mix-blend-mode: screen;"></a></div><nav class="hidden lg:flex items-center gap-gutter flex-grow justify-center" data-active-classes="text-primary border-t-2 border-primary pt-1"><a class="font-headline-lg uppercase tracking-widest text-on-surface-variant hover:text-primary transition-all text-body-lg animate-slide-down delay-100" data-path="about-us" href="#">About Us</a><a aria-current="page" class="font-headline-lg uppercase tracking-widest transition-all text-primary border-t-2 border-primary pt-1 text-body-lg animate-slide-down delay-200" data-path="core-menu" href="#">Core Menu</a><a class="font-headline-lg uppercase tracking-widest text-on-surface-variant hover:text-primary transition-all text-body-lg animate-slide-down delay-300" data-path="deals" href="#">Deals</a></nav><div class="flex items-center gap-gutter animate-slide-down delay-400"><a class="relative flex items-center text-on-surface-variant hover:text-primary transition-colors" data-path="basket" href="#"><span class="material-symbols-outlined text-[28px]">shopping_basket</span><span class="absolute -top-2 -right-2 bg-primary-container text-on-primary-container text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span></a><a class="font-label-caps uppercase text-on-surface border border-outline px-6 py-2 hover:bg-primary hover:text-on-primary transition-all text-body-md" data-path="login" href="#">Login</a></div></div></header><main class="w-full pt-20 bg-background min-h-screen relative z-10"><div class="flex flex-col w-full">
+<!-- Menu Header -->
+<section class="w-full px-margin-mobile md:px-margin-desktop py-16 md:py-24 relative overflow-hidden" id="hero-section">
+<div class="absolute inset-0 bg-surface-container-low opacity-50 z-0 parallax-bg" id="hero-bg"></div>
+<div class="absolute -top-40 -right-40 w-96 h-96 bg-primary opacity-5 blur-[120px] rounded-full"></div>
+<div class="relative z-10 max-w-container-max mx-auto flex flex-col items-center text-center">
+<span class="font-label-caps text-label-caps text-primary uppercase tracking-widest mb-4 block hero-text-reveal is-revealed" style="transition-delay: 0.1s;">The Elite Selection</span>
+<h1 class="font-display-lg text-display-lg text-on-surface uppercase tracking-widest mb-6 hero-text-reveal is-revealed" style="transition-delay: 0.2s;">Core Menu</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto hero-text-reveal is-revealed" style="transition-delay: 0.3s;">We take the time to prepare our dough properly, select ingredients carefully and build every pizza with the consistency our customers should expect.</p>
+</div>
+</section>
+<!-- Menu Grid -->
+<section class="w-full px-margin-mobile md:px-margin-desktop py-16">
+<div class="max-w-container-max mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter grid-flow-row-dense" id="product-grid">
+<!-- The Avalanche (Featured) -->
+<article class="col-span-1 md:col-span-2 lg:col-span-2 md:row-span-2 group relative bg-surface-container rounded-lg overflow-hidden shadow-xl border border-surface-container-high flex flex-col hover:border-outline-variant hover:shadow-2xl hover:scale-[1.01] transition-all duration-500 reveal-item is-revealed" style="transition-delay: 0s;">
+<div class="relative h-72 md:h-full overflow-hidden flex-1">
+<div class="absolute inset-0 bg-gradient-to-r from-transparent to-surface-container md:z-10 hidden md:block"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container to-transparent z-10 md:hidden"></div>
+<div class="absolute inset-0 bg-cover bg-center w-full h-full group-hover:scale-105 transition-transform duration-700 ease-out" data-alt="A massive, overloaded premium pizza with diverse gourmet toppings, dripping with cheese, shot in dramatic moody lighting on a dark slate background, warm fiery tones highlighting the edges." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAc25TzvonEP6bUx3PQH-n7WxJy8Zio1VLNMccR_pTK0etruzIK1DgVeEASGkLkBQITivu5JJT32FEWe4cLzyH0g6sfMQA6TV0WOuXtEpPk5No-MBowwuAPcbaF2rI_rDlNt4WE-fb2a3z7P8GtfZ-tcsvr42MUekZJnYCPurpJYB42ZQeKmXFKgZsNX0XmbcEARffh6DTDGDYkURvGsow-MnirFNBuMFGj6vPg_lKRp2Bx-oAHqhn_ZQ')"></div>
+<div class="absolute top-4 left-4 z-20 bg-primary text-on-primary font-label-caps text-[10px] uppercase px-3 py-1 rounded-sm tracking-widest shadow-[0_0_15px_rgba(255,181,158,0.4)]">Signature</div>
+</div>
+<div class="p-8 md:p-12 flex flex-col justify-center relative z-20 bg-surface-container">
+<div class="flex justify-between items-start mb-4">
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary uppercase tracking-widest">The Avalanche</h2>
+<div class="bg-primary-container text-on-primary-container px-4 py-1 rounded-sm font-bold text-body-lg ml-4">Ghc 28</div>
+</div>
+<p class="font-body-md text-on-surface-variant mb-8 line-clamp-3 md:line-clamp-none">Prepared for those who enjoy a generously topped pizza, The Avalanche combines cured meats, roasted peppers, caramelised onions and a molten four-cheese blend, finished with an intense high-temperature bake for exceptional texture and depth of flavour.</p>
+<div class="mt-auto">
+<button class="w-full md:w-auto bg-primary text-on-primary hover:bg-primary-fixed-dim transition-colors px-8 py-3 font-label-caps text-label-caps uppercase tracking-[0.2em] flex items-center justify-center gap-2 hover-shimmer relative overflow-hidden">
+<span class="relative z-10 flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">add_shopping_cart</span> Add to Basket</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Margherita -->
+<article class="bg-surface-container rounded-lg overflow-hidden flex flex-col group hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 reveal-item is-revealed" style="transition-delay: 0.15s;">
+<div class="h-64 relative overflow-hidden">
+<img alt="Margherita Pizza" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDUSAeBZ_kuwFUOz7CM9muVG5eJ1Lu2dEDFvQ_lo2mn7dYHwUw2fwkBuoq6jTaN8N08-Nex7VM7lHhPLogzeH2tpgdN8O7lJ8mSgbho9VTmXZYAFPEGT9JZyfBr13GJvFADPPpqyvZ6Yd9QQ8DwGCF-BRWuEybUnWm81H_JKeN1an6Da2K4YcRCHP-Nauwob4VGaC-g76c5vwzmxTHEu_XN0p9cp_hWRg0DyzbeVm7khKu1hz04R681w">
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container to-transparent opacity-80"></div>
+</div>
+<div class="p-6 flex flex-col flex-grow bg-surface-container relative z-10 -mt-12"><h3 class="font-headline-lg text-headline-lg-mobile text-on-surface uppercase tracking-widest text-lg mb-2">Margherita</h3><p class="font-body-md text-on-surface-variant text-xs mb-6 flex-grow">San Marzano tomato sauce, fresh fior di latte mozzarella, basil, and a drizzle of extra virgin olive oil.</p><div class="text-secondary-container font-bold text-lg mb-3 text-center">Ghc 16</div><button class="w-full border border-outline text-on-surface hover:bg-primary hover:text-on-primary hover:border-primary transition-colors py-2 font-label-caps text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover-shimmer relative overflow-hidden"><span class="relative z-10 flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">add</span> Add Item</span></button></div>
+</article>
+<!-- Pepperoni -->
+<article class="bg-surface-container rounded-lg overflow-hidden flex flex-col group hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 reveal-item is-revealed" style="transition-delay: 0.3s;">
+<div class="h-64 relative overflow-hidden">
+<img alt="Pepperoni Pizza" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4aqny4Ylr9jswf8pNPn8CcFjYt8Hzkv040702J9RjaZyObxor5CiXQS6rZ77KVh9fMCNr5tqgUZUJS8G7n8ShT3sggIuqD_lQ_XvA0uzghbH9B6f-VsZHgcc8ux1E1Kzs8YXqR5iKPpnnMl1k20L93hfU_DlFHty6ohuKsS4BwmESCpCdSTrDcI-t5vWdhvG8QYWMMa9J9V3pgBCyGrjYtibqk45e2_6F4taPOAzEXvuDRamYzeTEqg">
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container to-transparent opacity-80"></div>
+</div>
+<div class="p-6 flex flex-col flex-grow bg-surface-container relative z-10 -mt-12"><h3 class="font-headline-lg text-headline-lg-mobile text-on-surface uppercase tracking-widest text-lg mb-2">Pepperoni</h3><p class="font-body-md text-on-surface-variant text-xs mb-6 flex-grow">Double-smoked, hand-cut pepperoni that cups and crisps perfectly, layered over our rich house-made tomato sauce.</p><div class="text-secondary-container font-bold text-lg mb-3 text-center">Ghc 19</div><button class="w-full border border-outline text-on-surface hover:bg-primary hover:text-on-primary hover:border-primary transition-colors py-2 font-label-caps text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover-shimmer relative overflow-hidden"><span class="relative z-10 flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">add</span> Add Item</span></button></div>
+</article>
+<!-- Chicken Feast -->
+<article class="md:col-span-2 lg:col-span-2 bg-surface-container rounded-lg overflow-hidden flex flex-col group hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 reveal-item is-revealed" style="transition-delay: 0.45s;">
+<div class="h-64 relative overflow-hidden">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-700 ease-out" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDZZcr1IzXAbwGZCi4VcdK-hQ5lhmwEvsgAKZ47ye2RDJTDx2NabnLo0J0vBU9s4s5AfMVS0gV5VQXLiUQgfiVHs_5E41KYnBIP9NTu-E0EevI6MvGCdSAtRUqBTCSt7klim2LxGRU-JvcqI3FhZGmGkjhqwl-tR6jbRODt0uOk8Sc04lljYMrXbLREPTUrnutYOyBD566L-JBXaF0GL6cRTFXwt-3gxQQWR3T_sd-NyzrX94EiokIqsA')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container to-transparent opacity-80"></div>
+</div>
+<div class="p-6 flex flex-col flex-grow bg-surface-container relative z-10 -mt-12"><h3 class="font-headline-lg text-headline-lg-mobile text-on-surface uppercase tracking-widest text-lg mb-2">Chicken Feast</h3><p class="font-body-md text-on-surface-variant text-xs mb-6 flex-grow">Herb-roasted chicken breast, sweet red onions, bell peppers, and a smoky bourbon BBQ drizzle.</p><div class="text-secondary-container font-bold text-lg mb-3 text-center">Ghc 22</div><button class="w-full border border-outline text-on-surface hover:bg-primary hover:text-on-primary hover:border-primary transition-colors py-2 font-label-caps text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover-shimmer relative overflow-hidden"><span class="relative z-10 flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">add</span> Add Item</span></button></div>
+</article>
+<!-- Vegetarian -->
+<article class="bg-surface-container rounded-lg overflow-hidden flex flex-col group hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 reveal-item is-revealed" style="transition-delay: 0.1s;">
+<div class="h-64 relative overflow-hidden">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-700 ease-out" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBY9Ib0rriDratnSyQEtERB7ZNYAktu1r951MTZ52XOpPMeSma0PI56HPdVxUgkurd1I1ZNyB85jrteoMhAg06Ia4Nag1wTn7EXmdoWZ__YzV81rN-oaZr6IRU6g42viyhTcBJHcuGNtBzMzu9yPtDjP27OxgrmBW-jS7vjHR1RMWBnzQXrNcAhMff5Jjil_v_nePAyTtwdOfiZ_2vaTnOhaAmh0AIdIZF4blQokzOY79Yc6uG_UYHGpQ')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container to-transparent opacity-80"></div>
+<div class="absolute top-4 right-4 z-20 bg-surface text-on-surface font-label-caps text-[10px] uppercase px-2 py-1 rounded-sm border border-outline-variant">Veg</div>
+</div>
+<div class="p-6 flex flex-col flex-grow bg-surface-container relative z-10 -mt-12"><h3 class="font-headline-lg text-headline-lg-mobile text-on-surface uppercase tracking-widest text-lg mb-2">Earth's Bounty</h3><p class="font-body-md text-on-surface-variant text-xs mb-6 flex-grow">Charred zucchini, wild mushrooms, confit garlic, cherry tomatoes, and kalamata olives with fresh arugula.</p><div class="text-secondary-container font-bold text-lg mb-3 text-center">Ghc 20</div><button class="w-full border border-outline text-on-surface hover:bg-primary hover:text-on-primary hover:border-primary transition-colors py-2 font-label-caps text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover-shimmer relative overflow-hidden"><span class="relative z-10 flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">add</span> Add Item</span></button></div>
+</article>
+<!-- Hawaiian -->
+<article class="bg-surface-container rounded-lg overflow-hidden flex flex-col group hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 reveal-item is-revealed" style="transition-delay: 0.25s;">
+<div class="h-64 relative overflow-hidden">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-700 ease-out" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDAMcPGtwXMr24ZtY-XLofsss1_7MzDfg2BoyB7gMmbpgcc6_QfdcOhV-URxRqtDtraSjCkeYD0qJtPKC30FYinVbxR94BWzq7kighuNK4Uy2s0wXQVog4WsFhnZ8dfr_B37BXqUfq7Ery-4hfiYYZdw4KZLvITJAUByzdmoBG1Hz1IIRvXF4c_2HR-xbda8NnoMAb1cFWtRMk78ZvzfiLlt5V29Ex6JVnD5refvsAXTukWTPbHlunluQ')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container to-transparent opacity-80"></div>
+</div>
+<div class="p-6 flex flex-col flex-grow bg-surface-container relative z-10 -mt-12"><h3 class="font-headline-lg text-headline-lg-mobile text-on-surface uppercase tracking-widest text-lg mb-2">The Pacific</h3><p class="font-body-md text-on-surface-variant text-xs mb-6 flex-grow">Thick-cut honey glazed ham paired with wood-roasted pineapple chunks and jalapeño dust.</p><div class="text-secondary-container font-bold text-lg mb-3 text-center">Ghc 21</div><button class="w-full border border-outline text-on-surface hover:bg-primary hover:text-on-primary hover:border-primary transition-colors py-2 font-label-caps text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover-shimmer relative overflow-hidden"><span class="relative z-10 flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">add</span> Add Item</span></button></div>
+</article>
+<!-- BBQ Original -->
+<article class="md:col-span-2 bg-surface-container rounded-lg overflow-hidden flex flex-col group hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 reveal-item is-revealed" style="transition-delay: 0.4s;">
+<div class="h-64 relative overflow-hidden bg-surface-variant flex items-center justify-center"><img alt="BBQ Original Pizza" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxQ_j0ld78EA6JYSV4vDBsf8XUDa9NB6za-r8r-1u7e-2jNSwiBCB94o9EO32wt_bYvek-gs-yN0EyYa1lYtKz7NjLUqB7eUlyvzGJpTi_LJrXL46WndZCdQT1ZEHcoQJ908C_YrmKa4fs4cdqv05SfEilXUc3Zt9qHO89WXoEoOgzzb_56lwiuAm-Gbq2OGp-RIgxI7nQ_ncbIUAby29W5EVX2jgCZ24IFlAw4zfnX37k3ugtKgyK3g"><div class="absolute inset-0 bg-gradient-to-t from-surface-container to-transparent opacity-80"></div></div>
+<div class="p-6 flex flex-col flex-grow bg-surface-container relative z-10 -mt-12"><h3 class="font-headline-lg text-headline-lg-mobile text-on-surface uppercase tracking-widest text-lg mb-2">BBQ Original</h3><p class="font-body-md text-on-surface-variant text-xs mb-6 flex-grow">Smoky BBQ base, mozzarella, chicken, red onions, and sweetcorn.</p><div class="text-secondary-container font-bold text-lg mb-3 text-center">Ghc 20</div><button class="w-full border border-outline text-on-surface hover:bg-primary hover:text-on-primary hover:border-primary transition-colors py-2 font-label-caps text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover-shimmer relative overflow-hidden"><span class="relative z-10 flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">add</span> Add Item</span></button></div>
+</article>
+<!-- Spicy Beef One -->
+<article class="bg-surface-container rounded-lg overflow-hidden flex flex-col group hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 reveal-item is-revealed" style="transition-delay: 0.55s;">
+<div class="h-64 relative overflow-hidden bg-surface-variant flex items-center justify-center"><img alt="Spicy Beef One Pizza" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCryJB0QNEe5Pkd9DzZhOVjv7ylKlHvQqmW6fy0fRZaKMB0lTnq3xJ2bXDGa_KL9trau4pXShRSgf0PKm0G7D5LosFJm0cYMi1tD7K28ccLuD7cCAPqAHGE-BYwQl0d_Z9C4AljtwfNv0R_ZuDyGQxVlTTaZ9o8ZjUBBJLmQGyss7X0_h_5v1WSVq4z32AWkL1zZg5SSjXYDKoHXZFvx0qaR-SAx9ZnScBqtbW0pqDszyqZOYfyo30WnA"><div class="absolute inset-0 bg-gradient-to-t from-surface-container to-transparent opacity-80"></div></div>
+<div class="p-6 flex flex-col flex-grow bg-surface-container relative z-10 -mt-12"><h3 class="font-headline-lg text-headline-lg-mobile text-on-surface uppercase tracking-widest text-lg mb-2">Spicy Beef One</h3><p class="font-body-md text-on-surface-variant text-xs mb-6 flex-grow">Spicy ground beef, jalapeños, red onions, and green peppers on a tomato base.</p><div class="text-secondary-container font-bold text-lg mb-3 text-center">Ghc 21</div><button class="w-full border border-outline text-on-surface hover:bg-primary hover:text-on-primary hover:border-primary transition-colors py-2 font-label-caps text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover-shimmer relative overflow-hidden"><span class="relative z-10 flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">add</span> Add Item</span></button></div>
+</article>
+<!-- Free Choice -->
+<article class="bg-surface-container rounded-lg overflow-hidden flex flex-col group hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 reveal-item is-revealed" style="transition-delay: 0.2s;">
+<div class="h-64 relative overflow-hidden bg-surface-variant flex items-center justify-center"><img alt="Free Choice Pizza" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1ILdf-of2AaG9p8X7NiGjNnEqxKba9xLX5w9dCgU6_Czi8CeSAzBWtvVolOnsfP82noM5_oiY_dHFUn6d413JXL4etPVCfccrIXZpDH_TxHI57WSFUmAV2aE8R45xtbeYv9DPuzlemyLC2UER_6dj1US1Hs6e0_1p4PXFRz9FaZlXNRyN4GCnYzjBZXlbP_EiU8_bua6lE0_WYQU075j91CrQ7mThlPx9mAjMdlmb5jMfC6yMRtzlHg"><div class="absolute inset-0 bg-gradient-to-t from-surface-container to-transparent opacity-80"></div></div>
+<div class="p-6 flex flex-col flex-grow bg-surface-container relative z-10 -mt-12"><h3 class="font-headline-lg text-headline-lg-mobile text-on-surface uppercase tracking-widest text-lg mb-2">Free Choice</h3><p class="font-body-md text-on-surface-variant text-xs mb-6 flex-grow">Your creation. Choose any 4 toppings from our premium selection.</p><div class="text-secondary-container font-bold text-lg mb-3 text-center">Ghc 23</div><button class="w-full border border-outline text-on-surface hover:bg-primary hover:text-on-primary hover:border-primary transition-colors py-2 font-label-caps text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover-shimmer relative overflow-hidden"><span class="relative z-10 flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">add</span> Add Item</span></button></div>
+</article>
+<!-- All 4 One -->
+<article class="bg-surface-container rounded-lg overflow-hidden flex flex-col group hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 reveal-item is-revealed" style="transition-delay: 0.35s;">
+<div class="h-64 relative overflow-hidden bg-surface-variant flex items-center justify-center"><img alt="All 4 One Pizza" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIcgVi-9pRAkGoS17G0qw7IIe3Zt7EpV72RfNuFBdVGQHrWXFoTXUB6DyM4UapAlLpg-vYLa16VwBAMBpCZU-tHkV5rTrYgTL8lknRFaZV9P0xdf-BwRZ1EdTs8LCSmd9VRtKE7C8GqYLtgRGNBpc_yw2sy9ZzBdgHV7aT5RSu6qpLo6Geyd2SSO19RDIyOj8dRGYS1RpNWbUoORRFlXPxeHm-C_LQOkkjqgJDEq13hir3bsZ_xVEUrw"><div class="absolute inset-0 bg-gradient-to-t from-surface-container to-transparent opacity-80"></div></div>
+<div class="p-6 flex flex-col flex-grow bg-surface-container relative z-10 -mt-12"><h3 class="font-headline-lg text-headline-lg-mobile text-on-surface uppercase tracking-widest text-lg mb-2">All 4 One</h3><p class="font-body-md text-on-surface-variant text-xs mb-6 flex-grow">A quartered masterpiece—Pepperoni, Margherita, BBQ Chicken, and Earth's Bounty all in one pizza.</p><div class="text-secondary-container font-bold text-lg mb-3 text-center">Ghc 25</div><button class="w-full border border-outline text-on-surface hover:bg-primary hover:text-on-primary hover:border-primary transition-colors py-2 font-label-caps text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover-shimmer relative overflow-hidden"><span class="relative z-10 flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">add</span> Add Item</span></button></div>
+</article>
+<!-- Classic -->
+<article class="bg-surface-container rounded-lg overflow-hidden flex flex-col group hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 reveal-item is-revealed" style="transition-delay: 0.5s;">
+<div class="h-64 relative overflow-hidden bg-surface-variant flex items-center justify-center"><img alt="Classic Pizza" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7Buwo15GpvxvXrre_KOcUuTfuWOBP41lFMY1byHw9Qu5AwyrIGzlh45zNgAR5895JloMAQaIl__6pdBa_BQarKQkv-HkvoG-3CaKx0dHzVFB9sv3jxo_wUVvlw8dR4hxq25o7YjQ_XxByBRe73YknuiXTKL17xBywqrnIwz6kxFZ2hhRdQ-bgpW2kHYjO7SxyTpWnUFkoRct4FFAOE9P0KQ00oISw48rxt2TcPOFM6bkYya51dhPNCg"><div class="absolute inset-0 bg-gradient-to-t from-surface-container to-transparent opacity-80"></div></div>
+<div class="p-6 flex flex-col flex-grow bg-surface-container relative z-10 -mt-12"><h3 class="font-headline-lg text-headline-lg-mobile text-on-surface uppercase tracking-widest text-lg mb-2">Classic</h3><p class="font-body-md text-on-surface-variant text-xs mb-6 flex-grow">The timeless favorite—Tomato sauce, mozzarella, and a touch of oregano.</p><div class="text-secondary-container font-bold text-lg mb-3 text-center">Ghc 15</div><button class="w-full border border-outline text-on-surface hover:bg-primary hover:text-on-primary hover:border-primary transition-colors py-2 font-label-caps text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover-shimmer relative overflow-hidden"><span class="relative z-10 flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">add</span> Add Item</span></button></div>
+</article>
+</div>
+</div>
+</section>
+</div></main><footer class="w-full bg-surface-container-lowest py-margin-desktop border-t border-outline-variant relative z-10"><div class="w-full px-margin-desktop"><div class="grid grid-cols-1 md:grid-cols-3 gap-gutter items-start"><div class="space-y-4"><div class="flex items-center gap-4"><a class="font-headline-lg uppercase tracking-widest text-body-lg text-on-surface" href="#"><img alt="Phoenix Logo" class="h-8 w-auto inline-block mr-2 align-middle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJziCXIgAF6q28Ycjc4W61EC0iOKPDLTNDpQwF_623gxNFFMTiL63NfCP_PhQCXeHAKUVIigtMo0mhC14D37tkfrprmMr99hbNYloCuvN435ZpW-wnFKkQKATk2RirDvStODCheI9FQjA5mcS5UN0HijCMGX5RsSTQK_dyWCQlGyadu4cCjQrjt7-OoStL0AebBuQx_ylEUZ97WkGcR8Y2zx6tJawFFgG8jMCV2duc1jhhQV-xUxASqi2u7Vgb264nvNs" style="mix-blend-mode: screen;">AVALANCHE<img alt="Pizza Slice" class="h-8 w-auto inline-block ml-2 align-middle" src="https://lh3.googleusercontent.com/aida/AP1WRLsXQhKpY5UG1i04t2ZQIKjD4Q2mzA-gSmNKZMbRucUxmx-SFKVZ4B2uNwIs92pTRpKsBZ7g4T-Q0o0rVnv6TtACgX3xbP1f9O6BsfibM2PstyVUcQVj0WQ_v97yOzJHg4vRpL-DJlg4Tf1dYtQ1nte8_S53Aww3ASb6xGx_8GPwxlUcqPtKQ1QslIkz-pebtVyh5YnfBMPTYFnTpXGLzkFDazV30PTqLYy5nmPSofiXh8QwYn_8Vc5SZslY" style="mix-blend-mode: screen;"></a></div><p class="text-on-surface-variant text-body-md max-w-xs">Great pizza begins long before it reaches the oven. Carefully prepared dough, quality ingredients and patient technique form the foundation of every Avalanche pizza</p></div><div class="flex flex-col gap-4 items-center"><span class="font-label-caps text-label-caps text-primary uppercase">Connect</span><div class="flex gap-unit"><a class="cursor-pointer hover:opacity-80 transition-opacity" href="#"><img alt="Facebook" class="h-6 w-6 object-contain" src="https://lh3.googleusercontent.com/aida/AP1WRLsJxUwt7c1l2NgNyOK52T7q8Xy747t14MIeo_UDFOGeZ_Iq28jDIkgUn38woTOKC24lZ5Tefeyd_oy-LNR2uK0dEAXk3pTuuhF3-QF1ayWksjvgX_FNj_UihHYLh3D0013E2yR0wZO8CD90MPapUerR5FWKyRxs1WQV7AVHpWZdGJ4SKpZ1LYSD07jiH5tG8FyKAemDiUE0mf2BHNAiyD-4-n4aqB9S0pNmVQhUsUUEWsPMk6axmWxvgWsg" style="mix-blend-mode: screen;"></a><a class="cursor-pointer hover:opacity-80 transition-opacity" href="#"><img alt="Instagram" class="h-6 w-6 object-contain" src="https://lh3.googleusercontent.com/aida/AP1WRLvQNVckgqQ4GsElQQxsEFlE-MiU1bB_xQtIhXiPWNotJ76LeUAHk6szAyJRMWwRvGupV0wS3YdTUl9QOnG2rja5mEtkfxWA7iW1NIePl3CQKmOG4jEl9rv6S2y8cKu-bzHTpkiQLFMsl0qWZO8DNy7YaTwUapoinFYCVn6ojJtkQV7KQUj1NeCvEgIy_Fuosr_BwCxPbdStG3bNOfVBq53zhq61CZRiJUa8GhCcMiY5F0hxr_IcGG--THNA" style="mix-blend-mode: screen;"></a><a class="cursor-pointer hover:opacity-80 transition-opacity" href="#"><img alt="TikTok" class="h-6 w-6 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcHYH96iqr3rk79wplcSrOfTqFgXMS6R8Lvfm8CJAPEi3cZhn5a8YWhesHYaQ8kYE72Ig9UtKNMOGS7G05EtMSP3RpCRTyhJAszbFMOo3yXij4TYvSUu8No4DYKYpw8y9AmMECXSjQg4l-GubLp1LijChyVSJsTVH0WNtJxh8bOyzUFy4fjEfFeDPnfegETVC1Ep728_xtK1bI0ANKQ7iBlIKOfc6noAQTwO5SD5ecnLg8tMfoR4IfQ9xOdD9I09jFjfs" style="mix-blend-mode: screen;"></a></div></div><div class="text-right flex flex-col justify-between h-full"><p class="text-on-surface-variant text-body-md mb-4">Location: Bechem Community centre, along Kwasu Road, Bechem, Ahafo Region, Ghana.</p><p class="font-label-caps text-label-caps text-on-surface-variant uppercase">2026 avalanche pizza. all rights reserved</p></div></div></div></footer>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Spotlight effect
+    const spotlight = document.getElementById('spotlight');
+    document.addEventListener('mousemove', (e) => {
+      spotlight.style.setProperty('--mouse-x', `${e.clientX}px`);
+      spotlight.style.setProperty('--mouse-y', `${e.clientY}px`);
+    });
+
+    // Intersection Observer for scroll reveal
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.15
+    };
+
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-revealed');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    // Apply observer to hero text
+    document.querySelectorAll('.hero-text-reveal').forEach(el => {
+      revealObserver.observe(el);
+    });
+
+    // Apply observer to product grid items with staggered delay based on order
+    const gridItems = document.querySelectorAll('.reveal-item');
+    gridItems.forEach((item, index) => {
+      // Calculate a staggered delay based on a 4-column grid layout assumption
+      // This is a simple approximation for staggering visual entrance
+      let delay = (index % 4) * 0.15 + Math.floor(index / 4) * 0.1;
+      item.style.transitionDelay = `${delay}s`;
+      revealObserver.observe(item);
+    });
+
+    // Parallax effect for hero section background
+    const heroBg = document.getElementById('hero-bg');
+    if (heroBg && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      window.addEventListener('scroll', () => {
+        const scrollPosition = window.pageYOffset;
+        // Move background slower than content (parallax)
+        heroBg.style.transform = `translateY(${scrollPosition * 0.4}px)`;
+      });
+    }
+  });
+</script>
+
+
+</body></html>

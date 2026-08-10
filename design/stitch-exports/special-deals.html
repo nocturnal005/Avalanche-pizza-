@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html lang="en" style=""><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><link href="https://fonts.googleapis.com/css2?family=Metrophobic&amp;family=Manrope:wght@400;500&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"on-secondary-fixed":"#261a00","on-surface":"#e5e2e1","error":"#ffb4ab","on-primary-fixed":"#3a0b00","on-secondary":"#3f2e00","on-error-container":"#ffdad6","inverse-primary":"#ae3200","primary-fixed-dim":"#ffb59e","outline":"#ad897e","surface-container":"#201f1f","tertiary-fixed":"#ffdad4","surface-dim":"#131313","tertiary":"#ffb4a8","surface":"#131313","primary-fixed":"#ffdbd0","secondary-fixed":"#ffdf9e","surface-container-high":"#2a2a2a","surface-container-lowest":"#0e0e0e","surface-tint":"#ffb59e","error-container":"#93000a","on-tertiary":"#690000","on-primary-container":"#521300","on-tertiary-fixed-variant":"#920703","secondary-fixed-dim":"#fabd00","surface-container-highest":"#353534","on-primary-fixed-variant":"#852400","on-primary":"#5e1700","background":"#131313","on-surface-variant":"#e6beb2","tertiary-fixed-dim":"#ffb4a8","tertiary-container":"#fb5945","on-tertiary-fixed":"#410000","outline-variant":"#5c4037","surface-variant":"#353534","on-background":"#e5e2e1","secondary":"#ffdf9e","surface-bright":"#393939","on-secondary-container":"#6a4e00","secondary-container":"#fabd00","on-error":"#690005","surface-container-low":"#1c1b1b","on-tertiary-container":"#5c0000","primary":"#ffb59e","on-secondary-fixed-variant":"#5b4300","primary-container":"#ff571a","inverse-surface":"#e5e2e1","inverse-on-surface":"#313030"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"margin-mobile":"16px","container-max":"1280px","gutter":"24px","unit":"8px","margin-desktop":"64px"},"fontFamily":{"headline-lg-mobile":["Metrophobic"],"headline-lg":["Metrophobic"],"body-md":["Manrope"],"label-caps":["JetBrains Mono"],"body-lg":["Manrope"],"display-lg":["Metrophobic"]},"fontSize":{"headline-lg-mobile":["24px",{"lineHeight":"1.2","letterSpacing":"0.08em","fontWeight":"400"}],"headline-lg":["32px",{"lineHeight":"1.2","letterSpacing":"0.1em","fontWeight":"400"}],"body-md":["16px",{"lineHeight":"1.6","letterSpacing":"0.01em","fontWeight":"400"}],"label-caps":["12px",{"lineHeight":"1","letterSpacing":"0.2em","fontWeight":"500"}],"body-lg":["18px",{"lineHeight":"1.6","letterSpacing":"0.02em","fontWeight":"400"}],"display-lg":["48px",{"lineHeight":"1.1","letterSpacing":"0.15em","fontWeight":"400"}]}}}}</script>
+<style>
+    /* Cinematic Animations */
+    .hero-bg-anim {
+        animation: heroBgReveal 2s ease-out forwards;
+    }
+    @keyframes heroBgReveal {
+        0% { transform: scale(1.1); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .reveal-text {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    .reveal-text.is-revealed {
+        animation: textSlideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+    .char-stagger {
+        display: inline-block;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    .char-stagger.is-revealed {
+        animation: charReveal 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+    @keyframes textSlideUp {
+        0% { opacity: 0; transform: translateY(30px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes charReveal {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .scroll-reveal {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .scroll-reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Staggered delays for cards */
+    .stagger-1 { transition-delay: 0.1s; }
+    .stagger-2 { transition-delay: 0.2s; }
+    .stagger-3 { transition-delay: 0.3s; }
+    .stagger-4 { transition-delay: 0.4s; }
+
+    /* Parallax Image Effect */
+    .parallax-img {
+        transition: transform 0.1s ease-out;
+        will-change: transform;
+    }
+
+    /* Enhanced Hover Effects */
+    .hover-glow:hover {
+        box-shadow: 0 0 20px rgba(255,181,158,0.3);
+    }
+    .hover-lift {
+        transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-8px);
+    }
+    
+    .btn-shine {
+        position: relative;
+        overflow: hidden;
+    }
+    .btn-shine::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+        transform: skewX(-20deg);
+        transition: left 0.5s ease;
+    }
+    .btn-shine:hover::after {
+        left: 150%;
+    }
+</style>
+</head><body class="bg-background font-body-md text-on-surface"><header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.2)] scroll-reveal is-visible"><div class="h-20 w-full px-margin-desktop flex items-center justify-between"><div class="flex items-center gap-4"><img alt="Phoenix Logo" class="h-10 w-auto object-contain hover-lift" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyNQnBLeIpRO0fJSQqtECqcoxpy9SRwAxMT0XdugWjNs1cyGQS--mJkcQd6EwpylFH28a3i1fccSUo1qkey2lXxg9fekzpDjJXBV1vVH8ydAeesEEmTvnPPYzbYV4AR6vZ5iTEReX-bD1O0aivB9mizaiBpNa3ygJ4uYd_yiEpykAJPt3PC_mmnIodhUImi5912Qg30d-JOVkAicXlVQxWNfx8wTJw215aVObdxHuNq7ajk-8bxjnvjLxiwOgnAcYkGpo"/><span class="font-headline-lg text-white uppercase tracking-widest text-2xl reveal-text" style="animation-delay: 0.2s">AVALANCHE</span><img alt="Pizza Slice" class="h-10 w-auto object-contain hover-lift" src="https://lh3.googleusercontent.com/aida/AP1WRLuXZDGXwGoTUs3QhyDUhoKgE4SUC8U3lbvbwjPOJEpWwXbIPB4xg5uuZ0gMfZPySW8SJ_JLo6OUuL35ZsRMlm0WPrNvHqSdxLONhKoTzYEgykrTLZO1F6Vuozk3hqf3RYw-vA3k9xRmaR0ZrBiBpiQ_sDieltFtxSDKfdfXAJKoiT98uyuObl6ulTg4329C75iSW2nQ7J_LAW5DHGVLWmusdk-S1BgSk9El71LpF1tIxOykuu3smF_7vDDF"/></div><nav class="hidden lg:flex flex-1 justify-center items-center gap-12 reveal-text" data-active-classes="text-primary border-t-2 border-primary pt-1" style="animation-delay: 0.3s"><a class="font-headline-lg uppercase tracking-widest text-on-surface-variant hover:text-primary transition-all text-xl" data-path="about-us" href="#">About Us</a><a class="font-headline-lg uppercase tracking-widest text-on-surface-variant hover:text-primary transition-all text-xl" data-path="core-menu" href="#">Core Menu</a><a aria-current="page" class="font-headline-lg uppercase tracking-widest transition-all text-primary border-t-2 border-primary pt-1 text-xl" data-path="deals" href="#">Deals</a></nav><div class="flex items-center gap-8 reveal-text" style="animation-delay: 0.4s"><a class="relative flex items-center text-on-surface-variant hover:text-primary transition-colors hover:scale-110 duration-300" data-path="basket" href="#"><span class="material-symbols-outlined text-[28px]">shopping_basket</span><span class="absolute -top-2 -right-2 bg-primary-container text-on-primary-container text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span></a><a class="font-label-caps uppercase text-on-surface border border-outline px-8 py-3 hover:bg-primary hover:text-on-primary transition-all text-lg btn-shine hover-glow" data-path="login" href="#">Login</a></div></div></header><main class="w-full pt-20 bg-background min-h-screen"><div class="flex flex-col w-full -mt-20">
+<!-- Hero / Featured Deal Section -->
+<section class="relative w-full min-h-[90vh] flex items-center justify-center pt-20 px-margin-mobile md:px-margin-desktop bg-surface-container-lowest overflow-hidden">
+<!-- Background Image with Gradient Scrim -->
+<div class="absolute inset-0 w-full h-full">
+<div class="absolute inset-0 bg-cover bg-center hero-bg-anim" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBVyleQR2ZRl-j7W84H-LiGLOJEoHvHSw8yMfoipB1ivHUTaXVjyYuvFV7YJp1nflsAwk-LPw7Ve2Gh6whuu3bZxRJcXqTQFL3hh9DLm87O0oUjDA5odK-om5GicPUekv4BBUykl9Fh9SoNVboK7CayWRAc8Qkg8x4VP7vBJUz-xCYAXUEjRjepoc4nljinueSDIyPWKgqUln9JgnbCX1SGXSkxGW8EiOTc_UfSTLjZ7FEzqRObpWTrbPswF2CGimCipuo')"></div>
+<!-- Complex gradient for readability and mood -->
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/30 mix-blend-multiply"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent"></div>
+<!-- Faint primary glow representing heat -->
+<div class="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] mix-blend-screen opacity-50"></div>
+</div>
+<div class="relative z-10 w-full max-w-container-max grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center">
+<div class="lg:col-span-6 flex flex-col gap-6 lg:gap-8">
+<div class="flex items-center gap-3 reveal-text" style="animation-delay: 0.5s">
+<span class="font-label-caps text-label-caps tracking-widest uppercase text-primary border border-primary px-3 py-1 bg-surface/50 backdrop-blur-sm">Elite Offer</span>
+<span class="font-label-caps text-label-caps tracking-[0.3em] uppercase text-on-surface-variant">Limited Time</span>
+</div>
+<h1 class="font-display-lg text-[48px] md:text-[72px] lg:text-[88px] text-on-surface leading-[0.9] tracking-widest uppercase break-words" id="hero-title">
+                    The <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Party Feast</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg leading-relaxed border-l-2 border-primary/30 pl-4 reveal-text" style="animation-delay: 1.2s">
+                    Four massive artisan pizzas, three boxes of inferno-roasted wings, and endless sides. Crafted for the multitude. Forged in heat.
+                </p>
+<div class="flex items-end gap-4 mt-4 reveal-text" style="animation-delay: 1.4s">
+<span class="font-headline-lg text-[56px] text-on-surface leading-none">Ghc 89</span>
+<span class="font-body-md text-on-surface-variant line-through mb-2">Ghc 120</span>
+</div>
+<button class="group relative overflow-hidden bg-primary w-fit px-12 py-5 transition-transform hover:scale-105 duration-300 shadow-[0_0_40px_rgba(255,181,158,0.15)] reveal-text btn-shine hover-glow" style="animation-delay: 1.6s">
+<span class="relative z-10 font-headline-lg text-headline-lg-mobile uppercase tracking-[0.15em] text-on-primary">Claim Feast</span>
+<div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-[150%] group-hover:animate-[shimmer_1.5s_infinite]"></div>
+</button>
+</div>
+</div>
+</section>
+<!-- Deals Grid Section -->
+<section class="w-full px-margin-mobile md:px-margin-desktop py-32 bg-background relative z-20">
+<div class="max-w-container-max mx-auto flex flex-col gap-24">
+<!-- Section Header -->
+<div class="flex flex-col md:flex-row justify-between items-end gap-8 border-b border-surface-variant pb-8 scroll-reveal stagger-1">
+<div class="flex flex-col gap-2">
+<span class="font-label-caps text-label-caps text-primary tracking-[0.3em] uppercase">THE FEAST EDIT</span>
+<h2 class="font-headline-lg text-[40px] text-on-surface uppercase tracking-widest">THE AVALANCHE COLLECTION</h2>
+</div>
+<div class="flex items-center gap-4 hidden md:flex">
+<span class="w-16 h-[1px] bg-primary"></span>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Sort: Highest Value</span>
+</div>
+</div>
+<!-- Bento Grid of Deals -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-gutter auto-rows-[minmax(350px,_auto)]" id="deal-cards">
+<!-- Mega Deal (Large Card) -->
+<div class="lg:col-span-8 group relative bg-surface-container flex flex-col md:flex-row overflow-hidden hover:shadow-2xl transition-all duration-500 scroll-reveal stagger-1 hover-lift">
+<div class="absolute inset-0 border border-surface-container-high transition-colors group-hover:border-primary/30 z-20 pointer-events-none"></div>
+<div class="md:w-1/2 h-64 md:h-full relative overflow-hidden bg-surface-dim">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110 parallax-bg" data-alt="A dramatic top-down view of two massive, gourmet pizzas with artisanal toppings, blistered crusts, steaming hot in sleek black delivery boxes on a dark slate surface, moody cinematic lighting." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAscUD3LvqDCOkdtb3WK9muO03UXtPxqitn28REulb-EZaJ7jXT-YsVMKGKemAs5Ua3SVoepLW9w393M1aPyPuIEsT-liXHUtdOGL6M4HDJqwM9BPB0g183m9ypVij-SUyCY94luMnOJzD82d5ugwrwwAaZv8t9q6qPoaEdhj5lWqR5iQdi3yE8Kqosi4SDXG8RT_56xWax0gH5f9CyU96YGEPR2b3xhS5BDbB2nQMShuBQwYjx2a-8hQ')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container via-transparent to-transparent md:bg-gradient-to-l opacity-80 z-10"></div>
+</div>
+<div class="md:w-1/2 p-8 md:p-12 flex flex-col justify-between z-10 bg-surface-container relative">
+<div class="flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<span class="font-label-caps text-label-caps bg-secondary-container text-on-secondary-container px-2 py-1 uppercase tracking-widest">Mega Deal</span>
+<span class="material-symbols-outlined text-primary group-hover:rotate-12 transition-transform">local_fire_department</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface uppercase tracking-wider">THE SUMMIT</h3>
+<p class="font-body-md text-on-surface-variant">Two XL Signature Pizzas, 20 Wings, Large Garlic Bread, and two 2L sodas. Maximum impact for serious gatherings.</p>
+</div>
+<div class="mt-8 flex items-center justify-between">
+<span class="font-headline-lg text-[32px] text-on-surface">Ghc 55</span>
+<button class="font-label-caps text-label-caps uppercase tracking-[0.2em] text-primary border border-primary px-6 py-3 hover:bg-primary hover:text-on-primary transition-colors btn-shine hover-glow">Add to Cart</button>
+</div>
+</div>
+</div>
+<!-- Family Deal (Tall Card) -->
+<div class="lg:col-span-4 lg:row-span-2 group relative bg-surface-container-low flex flex-col overflow-hidden hover:shadow-2xl transition-all duration-500 scroll-reveal stagger-2 hover-lift">
+<div class="absolute inset-0 border border-surface-container-high transition-colors group-hover:border-primary/30 z-20 pointer-events-none"></div>
+<div class="h-64 lg:h-1/2 relative overflow-hidden bg-surface-dim">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110 parallax-bg" data-alt="A beautifully styled family meal setting, featuring one large classic pepperoni pizza, a fresh vibrant side salad, and golden baked pasta in a dark, high-end kitchen setting, warm overhead lighting." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAY5xj9An-xVoNmoIjSA69fnWYMLwGGmBFZVYMEZPkXwZ7hW-31dLM-ujGml1EUFmdqVY6I3f34PSKEglVW_YR-VSvjufpoYZRyo3sdVjWnVJRohwrutaziD_QgbZyjoM6WZKIOEgunHoOuEM9Sx1FeKvldJqa4mFERHBmVGPte1G2K4-Si3c4gii2WDiWq9ZLhjr1xyFmMp-EgtDDHC-NKJkY3jjj9AGhTurL7unAQs9gpyIL7vkyf5A')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-low to-transparent opacity-90 z-10"></div>
+</div>
+<div class="flex-1 p-8 md:p-10 flex flex-col justify-between z-10 relative bg-surface-container-low">
+<div class="flex flex-col gap-4">
+<span class="font-label-caps text-label-caps text-tertiary uppercase tracking-[0.3em] border-b border-surface-variant pb-2 w-fit">Family Deal</span>
+<h3 class="font-headline-lg text-[36px] text-on-surface uppercase tracking-wider leading-[1.1]">BASECAMP</h3>
+<p class="font-body-md text-on-surface-variant">One Large Classic Pizza, Family Salad, Baked Ziti, and a Dessert. Engineered to satisfy the unit.</p>
+<div class="flex flex-col gap-2 mt-4 font-label-caps text-[11px] text-on-surface-variant/70 uppercase tracking-widest">
+<div class="flex justify-between border-b border-surface-variant/50 pb-1">
+<span class="">Serves</span><span class="">4-6</span>
+</div>
+<div class="flex justify-between border-b border-surface-variant/50 pb-1">
+<span class="">Prep Time</span><span class="">25 Min</span>
+</div>
+</div>
+</div>
+<div class="mt-8 flex flex-col gap-4">
+<span class="font-headline-lg text-[40px] text-on-surface text-right">Ghc 42</span>
+<button class="w-full font-label-caps text-label-caps uppercase tracking-[0.2em] text-on-surface border border-outline px-6 py-4 hover:bg-surface-variant transition-colors flex justify-center items-center gap-2 group/btn btn-shine">
+                                Initiate Order
+                                <span class="material-symbols-outlined text-[16px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Triple Deal (Standard Card) -->
+<div class="lg:col-span-4 group relative bg-surface-container-lowest border border-surface-variant flex flex-col overflow-hidden hover:shadow-2xl transition-all duration-500 scroll-reveal stagger-3 hover-lift"><div class="h-64 relative overflow-hidden bg-surface-dim"><div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110 parallax-bg" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCRaqSEu_6WmuE9ENA1BVZ0s9m20P4dXiM5Quuj6A2cpSxPRU2SYiy7Tci1UJuGgydZVUd1IyXY5_IsDQfU3K2m4MWrNpjT5QTRNflecnIyiOM9U4_Atw95aFfucFbwBPa7c_Cp0dcBGdhr5p3ll_FOak8h6S89kOpAjh4tmJ9IHPilTHhSZ7MhDwPxo9ksa-qfT18D9D314JopY8W8GrOd79dwHlo2DAwpyQfW072JDxeF4_8AqgOxRA')"></div><div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest to-transparent opacity-90 z-10"></div></div>
+<div class="p-8 flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-6">
+<span class="font-label-caps text-label-caps text-primary tracking-[0.2em] uppercase">Triple Deal</span>
+<div class="w-8 h-8 rounded-full bg-surface flex items-center justify-center border border-outline/30">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">filter_3</span>
+</div>
+</div>
+<h3 class="font-headline-lg text-[28px] text-on-surface uppercase tracking-wider mb-3">THE ASCENT</h3>
+<p class="font-body-md text-on-surface-variant mb-6 flex-1">Three Medium 1-Topping Pizzas. The optimal equation for varied tastes.</p>
+<div class="flex items-end justify-between border-t border-surface-variant pt-6">
+<span class="font-headline-lg text-[28px] text-on-surface">Ghc 33</span>
+<button class="font-label-caps text-label-caps uppercase tracking-widest text-primary hover:text-secondary transition-colors group-hover:translate-x-1">Select →</button>
+</div>
+</div>
+</div>
+<!-- Pizza Party (Standard Card) -->
+<div class="lg:col-span-4 group relative bg-surface-container border border-surface-variant flex flex-col overflow-hidden hover:shadow-2xl transition-all duration-500 scroll-reveal stagger-4 hover-lift"><div class="h-64 relative overflow-hidden bg-surface-dim"><div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110 parallax-bg" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDObk6dFC05FfA6TO1OcKRtFF35W6DTMDpxlKHYYGVcG1bncHHpuuH3psxLxgU5KidMhWE6X_38lvGMprA9LgAuDvx_AUHfsDhapvu0P3rAm_O7tzbct-mjN-MfpdTOKfsl9yH0bTkFR3_SxJniLl6ngwclVVYTo4Uhu6DR669PJFgjVFa8KCl22BuN36oOJV_6IyxsDcB7M2ckVQ2duLK2d5vGNyQL3HNXiiPgK54eomhc8lasIaM1ag')"></div><div class="absolute inset-0 bg-gradient-to-t from-surface-container to-transparent opacity-90 z-10"></div></div>
+<div class="absolute -right-10 -top-10 w-40 h-40 bg-primary/5 rounded-full blur-[40px] group-hover:bg-primary/10 transition-colors"></div>
+<div class="p-8 flex-1 flex flex-col relative z-10">
+<div class="flex justify-between items-start mb-6">
+<span class="font-label-caps text-label-caps text-primary tracking-[0.2em] uppercase">Pizza Party</span>
+<span class="material-symbols-outlined text-on-surface-variant">celebration</span>
+</div>
+<h3 class="font-headline-lg text-[28px] text-on-surface uppercase tracking-wider mb-3">THE GATHERING</h3>
+<p class="font-body-md text-on-surface-variant mb-6 flex-1">Five Large 1-Topping Pizzas. Designed for mass deployment. No one goes hungry.</p>
+<div class="flex items-end justify-between border-t border-surface-variant pt-6">
+<span class="font-headline-lg text-[28px] text-on-surface">Ghc 65</span>
+<button class="font-label-caps text-label-caps uppercase tracking-widest text-primary hover:text-secondary transition-colors group-hover:translate-x-1">Select →</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Custom Build Prompt Section -->
+<section class="w-full py-32 px-margin-mobile md:px-margin-desktop bg-surface-container-highest border-t border-outline-variant relative overflow-hidden scroll-reveal">
+<!-- Abstract geometric background pattern -->
+<div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 32px 32px;"></div>
+<div class="max-w-[800px] mx-auto text-center relative z-10 flex flex-col items-center gap-8">
+<span class="material-symbols-outlined text-[48px] text-primary scroll-reveal stagger-1">architecture</span>
+<h2 class="font-headline-lg text-[40px] md:text-[56px] text-on-surface uppercase tracking-widest leading-[1.1] scroll-reveal stagger-2">CHOOSE YOUR FEAST</h2>
+<p class="font-body-lg text-on-surface-variant max-w-lg scroll-reveal stagger-3">Choose your favourites, bring them together, and create an Avalanche feast made entirely around your appetite.</p>
+<button class="mt-4 font-headline-lg text-headline-lg-mobile uppercase tracking-[0.15em] text-on-surface border-2 border-outline px-10 py-4 hover:bg-surface-bright hover:border-primary transition-all duration-300 scroll-reveal stagger-4 btn-shine hover-glow">START YOUR ORDER</button>
+</div>
+</section>
+</div>
+<style>
+    @keyframes shimmer {
+        100% {
+            transform: translateX(150%);
+        }
+    }
+</style></main><footer class="w-full bg-surface-container-lowest py-margin-desktop border-t border-outline-variant scroll-reveal"><div class="w-full px-margin-desktop"><div class="grid grid-cols-1 md:grid-cols-3 gap-gutter items-start"><div class="space-y-4"><div class="flex items-center gap-4"><a class="font-headline-lg uppercase tracking-widest text-body-lg text-on-surface" href="#"><img alt="Phoenix Logo" class="h-8 w-auto inline-block mr-2 align-middle hover-lift" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDT0-NW4aX2bG68-cvOU31HFd34RnIiuhAlWWEwGILPFHeLg4QmRvjxinTGkIg_G8Xu-KyuVD3_8TXVOloxThZeyFLuG_wzZ1-cQ4NpS-YoK_m1ZoFWD1zY-SqBAnc4P2eY6sOPe1jiDlcIMcupP26qPNHDa__xfyJMcn4KwZ2pLZNTB-RUFwcHEMxcy8D4YHDdKBcB98GyqrJZwAEKE2CDcyVEtd_ll1mbOaPQAJ8JwFw0OsORmCHXo8NTrW_OJlSlcLA" style="mix-blend-mode: screen;"/>AVALANCHE<img alt="Pizza Slice" class="h-8 w-auto inline-block ml-2 align-middle hover-lift" src="https://lh3.googleusercontent.com/aida/AP1WRLuXZDGXwGoTUs3QhyDUhoKgE4SUC8U3lbvbwjPOJEpWwXbIPB4xg5uuZ0gMfZPySW8SJ_JLo6OUuL35ZsRMlm0WPrNvHqSdxLONhKoTzYEgykrTLZO1F6Vuozk3hqf3RYw-vA3k9xRmaR0ZrBiBpiQ_sDieltFtxSDKfdfXAJKoiT98uyuObl6ulTg4329C75iSW2nQ7J_LAW5DHGVLWmusdk-S1BgSk9El71LpF1tIxOykuu3smF_7vDDF" style="mix-blend-mode: screen;"/></a></div><p class="text-on-surface-variant text-body-md max-w-xs">Great pizza begins long before it reaches the oven. Carefully prepared dough, quality ingredients and patient technique form the foundation of every Avalanche pizza.</p></div><div class="flex flex-col gap-4 items-center"><span class="font-label-caps text-label-caps text-primary uppercase text-center">Connect</span><div class="flex gap-unit"><a class="cursor-pointer hover:opacity-80 transition-opacity hover-lift" href="#"><img alt="Facebook" class="h-6 w-6 object-contain" src="https://lh3.googleusercontent.com/aida/AP1WRLsJxUwt7c1l2NgNyOK52T7q8Xy747t14MIeo_UDFOGeZ_Iq28jDIkgUn38woTOKC24lZ5Tefeyd_oy-LNR2uK0dEAXk3pTuuhF3-QF1ayWksjvgX_FNj_UihHYLh3D0013E2yR0wZO8CD90MPapUerR5FWKyRxs1WQV7AVHpWZdGJ4SKpZ1LYSD07jiH5tG8FyKAemDiUE0mf2BHNAiyD-4-n4aqB9S0pNmVQhUsUUEWsPMk6axmWxvgWsg" style="mix-blend-mode: screen;"/></a><a class="cursor-pointer hover:opacity-80 transition-opacity hover-lift" href="#"><img alt="Instagram" class="h-6 w-6 object-contain" src="https://lh3.googleusercontent.com/aida/AP1WRLvQNVckgqQ4GsElQQxsEFlE-MiU1bB_xQtIhXiPWNotJ76LeUAHk6szAyJRMWwRvGupV0wS3YdTUl9QOnG2rja5mEtkfxWA7iW1NIePl3CQKmOG4jEl9rv6S2y8cKu-bzHTpkiQLFMsl0qWZO8DNy7YaTwUapoinFYCVn6ojJtkQV7KQUj1NeCvEgIy_Fuosr_BwCxPbdStG3bNOfVBq53zhq61CZRiJUa8GhCcMiY5F0hxr_IcGG--THNA" style="mix-blend-mode: screen;"/></a><a class="cursor-pointer hover:opacity-80 transition-opacity hover-lift" href="#"><img alt="TikTok" class="h-6 w-6 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOIKaY0O4J_Gn4hdB2yvInKxvgnFpjjnGCexG4fz8yy_B2TNJp4g3S2JCVaGL15lbzePyGcdzvUtVwX1tUDx3pttTmZPkYJ0cf6HmBNWHoLt-IT6cH_8xFL-X8P00y7gONNemLENsue02w1W1tMERuLb55P978nlDHgUPz6rAHOYIoPJhWWeKOqSzkfbA9X2ncwM8sxRL8NVwsz6ydLEWNmbuurYhL7V553i1RmRpMfMP2DOz9YnjPheofYglKjVtSg1A" style="mix-blend-mode: screen;"/></a></div></div><div class="text-right flex flex-col justify-between h-full gap-4"><p class="text-on-surface-variant text-body-md mb-4">Location: Bechem Community centre, along Kwasu Road, Bechem, Ahafo Region, Ghana.</p><p class="font-label-caps text-label-caps text-on-surface-variant uppercase">© 2026 AVALANCHE PIZZA. ALL RIGHTS RESERVED.</p></div></div></div></footer>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Hero Title Letter Animation
+        const title = document.getElementById('hero-title');
+        if (title) {
+            const textNodes = Array.from(title.childNodes).filter(node => node.nodeType === 3);
+            textNodes.forEach(node => {
+                const text = node.textContent;
+                if(text.trim()) {
+                    const spanWrap = document.createElement('span');
+                    text.split('').forEach((char, index) => {
+                        const span = document.createElement('span');
+                        span.textContent = char;
+                        span.className = 'char-stagger';
+                        span.style.animationDelay = `${0.6 + (index * 0.05)}s`;
+                        // preserve spaces
+                        if (char === ' ') { span.style.whiteSpace = 'pre'; }
+                        spanWrap.appendChild(span);
+                    });
+                    title.replaceChild(spanWrap, node);
+                }
+            });
+            
+            // Trigger animation on chars
+            setTimeout(() => {
+                document.querySelectorAll('.char-stagger').forEach(el => el.classList.add('is-revealed'));
+                document.querySelectorAll('.reveal-text:not(.char-stagger)').forEach(el => el.classList.add('is-revealed'));
+            }, 100);
+        }
+
+        // Scroll Reveals (Intersection Observer)
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Simple Parallax for Images inside cards on scroll
+        window.addEventListener('scroll', () => {
+            const parallaxImages = document.querySelectorAll('.parallax-bg');
+            parallaxImages.forEach(img => {
+                const rect = img.parentElement.getBoundingClientRect();
+                const center = window.innerHeight / 2;
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    const distFromCenter = rect.top + (rect.height / 2) - center;
+                    // very subtle shift
+                    const shift = distFromCenter * -0.05; 
+                    img.style.transform = `translateY(${shift}px) scale(1.1)`;
+                }
+            });
+        });
+    });
+</script>
+</body></html>
