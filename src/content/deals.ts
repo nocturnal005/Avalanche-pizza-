@@ -77,7 +77,10 @@ export const deals: Deal[] = [
     includes: ['3 medium 1-topping pizzas'],
     meta: [],
     image: 'deal-the-ascent',
-    imageAlt: 'Three medium pizzas in Avalanche boxes ready to share',
+    // Owner's Stitch screen, 2026-08-12 — three open boxes, which is exactly
+    // what the deal is. Master archived in design/stitch-exports/source-images/.
+    imageAlt:
+      'Three medium pizzas in open Avalanche boxes on a wooden table, friends laughing over drinks behind them',
     slot: 'triple',
     icon: 'filter_3',
     available: true,
