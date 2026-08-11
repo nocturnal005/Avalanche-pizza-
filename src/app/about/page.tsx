@@ -72,14 +72,35 @@ export default function AboutPage() {
               __html: `<video class="h-full w-full object-cover object-center motion-reduce:hidden" autoplay loop muted playsinline preload="auto" disablepictureinpicture disableremoteplayback><source src="/videos/about-hero-2.mp4" type="video/mp4"/></video>`,
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/40" />
+          {/* THE FULL-BLEED SCRIM IS GONE (owner, 2026-08-11).
+              The Stitch export specifies `from-background via-background/80
+              to-background/40` here, and that is right for the still image it
+              was drawn around — a heavy veil costs a photograph nothing. Over
+              a moving image it is pure loss: measured against the raw frames,
+              it was leaving 41% of the light in the middle of the picture and
+              17% at the brightest band, which is what read as haze.
+
+              A DELIBERATE DEPARTURE FROM THE EXPORT, at his direction, on the
+              same footing as the 5/6 story split below.
+
+              What replaces it is a bottom-only fade: fully transparent above
+              32%, so the chef and the whole upper frame are untouched, and
+              resolving to the page colour at the very bottom so the hero still
+              melts into "01 Our Story" instead of hard-cutting. Text stays
+              legible on `.hero-text-shadow` (globals.css) — a shadow darkens
+              only the pixels behind the glyphs, where a scrim darkened all of
+              them. */}
+          <div
+            className="absolute inset-0 bg-[linear-gradient(to_top,var(--color-background)_0%,color-mix(in_oklab,var(--color-background)_55%,transparent)_18%,transparent_32%)]"
+            aria-hidden="true"
+          />
 
           <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center gap-6 text-center">
-            <h1 className="animate-fade-up delay-100 font-display-lg text-[30px] uppercase leading-none tracking-[0.15em] text-on-surface drop-shadow-2xl sm:text-[40px] md:text-display-lg">
+            <h1 className="hero-text-shadow animate-fade-up delay-100 font-display-lg text-[30px] uppercase leading-none tracking-[0.15em] text-on-surface sm:text-[40px] md:text-display-lg">
               {hero.title}
             </h1>
             <div className="animate-fade-up delay-200 mb-2 h-1 w-16 bg-primary" />
-            <p className="animate-fade-up delay-300 max-w-2xl font-label-caps text-label-caps uppercase tracking-[0.3em] text-primary-fixed">
+            <p className="hero-text-shadow-dense animate-fade-up delay-300 max-w-2xl font-label-caps text-label-caps uppercase tracking-[0.3em] text-primary-fixed">
               {hero.tagline}
             </p>
           </div>

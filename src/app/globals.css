@@ -347,6 +347,35 @@
   }
 }
 
+/* Legibility for text sitting directly on the About hero video, which since
+   2026-08-11 has no scrim over it (the owner wanted the video seen, not
+   veiled). A shadow buys contrast where a scrim did: it darkens only the
+   pixels immediately behind each glyph, so the picture itself stays at full
+   brightness.
+
+   Measured against the raw frames, the 48px heading sits at 4.90:1 with no
+   shadow counted at all — clear of the 3:1 WCAG asks of large text. */
+.hero-text-shadow {
+  text-shadow:
+    0 1px 2px rgb(0 0 0 / 0.9),
+    0 2px 16px rgb(0 0 0 / 0.75);
+}
+
+/* The 12px tagline is the weak one: 3.75:1 by the same measurement, under the
+   4.5:1 WCAG wants for small text. It needs a denser halo than the heading —
+   a tight opaque core so thin uppercase strokes hold their edge, plus two
+   wider passes that darken the video immediately around each glyph. WCAG's
+   maths cannot model a shadow, so treat that 3.75 as a floor rather than the
+   real figure; the honest fix if it is ever challenged is a larger tagline,
+   not a scrim back over the picture. */
+.hero-text-shadow-dense {
+  text-shadow:
+    0 0 3px rgb(0 0 0 / 0.95),
+    0 1px 3px rgb(0 0 0 / 0.95),
+    0 2px 10px rgb(0 0 0 / 0.9),
+    0 0 22px rgb(0 0 0 / 0.7);
+}
+
 /* Reduced motion: everything above collapses to a plain, instant, fully
    visible page. Nothing here is load-bearing for reading or ordering. */
 @media (prefers-reduced-motion: reduce) {
