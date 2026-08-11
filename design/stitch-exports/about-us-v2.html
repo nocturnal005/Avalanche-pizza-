@@ -1,0 +1,272 @@
+<!DOCTYPE html><html lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<style>
+        @layer base {
+            html, body {
+                margin: 0;
+                padding: 0;
+            }
+            body {
+                overscroll-behavior: none;
+            }
+            main > :first-child {
+                margin-top: 0 !important;
+            }
+            main > :last-child {
+                margin-bottom: 0 !important;
+            }
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#6a4e00",
+                        "on-secondary": "#3f2e00",
+                        "inverse-on-surface": "#313030",
+                        "on-background": "#e5e2e1",
+                        "on-primary-container": "#521300",
+                        "on-primary": "#5e1700",
+                        "on-tertiary": "#690000",
+                        "on-surface-variant": "#e6beb2",
+                        "on-tertiary-fixed": "#410000",
+                        "surface-tint": "#ffb59e",
+                        "inverse-surface": "#e5e2e1",
+                        "secondary-container": "#fabd00",
+                        "primary-fixed-dim": "#ffb59e",
+                        "primary-fixed": "#ffdbd0",
+                        "surface-container-highest": "#353534",
+                        "on-tertiary-container": "#5c0000",
+                        "on-primary-fixed-variant": "#852400",
+                        "surface-container-low": "#1c1b1b",
+                        "background": "#131313",
+                        "tertiary-container": "#fb5945",
+                        "error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#920703",
+                        "on-error": "#690005",
+                        "on-error-container": "#ffdad6",
+                        "inverse-primary": "#ae3200",
+                        "secondary-fixed": "#ffdf9e",
+                        "tertiary-fixed": "#ffdad4",
+                        "surface-variant": "#353534",
+                        "tertiary": "#ffb4a8",
+                        "secondary-fixed-dim": "#fabd00",
+                        "on-secondary-fixed": "#261a00",
+                        "error": "#ffb4ab",
+                        "on-primary-fixed": "#3a0b00",
+                        "outline-variant": "#5c4037",
+                        "surface-dim": "#131313",
+                        "surface": "#131313",
+                        "primary-container": "#ff571a",
+                        "surface-container-high": "#2a2a2a",
+                        "surface-bright": "#393939",
+                        "tertiary-fixed-dim": "#ffb4a8",
+                        "secondary": "#ffdf9e",
+                        "surface-container": "#201f1f",
+                        "on-surface": "#e5e2e1",
+                        "primary": "#ffb59e",
+                        "outline": "#ad897e",
+                        "surface-container-lowest": "#0e0e0e",
+                        "on-secondary-fixed-variant": "#5b4300"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "margin-desktop": "64px",
+                        "margin-mobile": "16px",
+                        "container-max": "1280px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Metrophobic", "sans-serif"],
+                        "headline-lg-mobile": ["Metrophobic", "sans-serif"],
+                        "headline-lg": ["Metrophobic", "sans-serif"],
+                        "body-md": ["Manrope", "sans-serif"],
+                        "body-lg": ["Manrope", "sans-serif"],
+                        "label-caps": ["JetBrains Mono", "monospace"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "0.15em", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "letterSpacing": "0.08em", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "letterSpacing": "0.02em", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.2em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Metrophobic&amp;family=Manrope:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+</head>
+<body class="bg-background font-body-md text-on-surface">
+<header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.2)]"><div class="h-20 w-full px-margin-desktop flex items-center justify-between"><div class="flex items-center gap-4"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXwBp9Qpa1wcTCYTnNAbaxIJCuuhoUrNYFZhvLbqmgnRHhP0tfxXU-X2JaUYJIqboNFuM26V8GqN4ZUk39Y20JO2yepnLrOo3BIgj3FwJCxMoy859ACQbsSGzWRn3UPToiprQSwZa4hKl3UqYEYRsyMUvUfOHxAeBpDpY9EhaMOfNasOpTTBjwfhSmXs-MStX9PfsuXuFUmf6ClP4QL99AHYzw5LQ0c4Ri-UU1oZihuF4jTBeHG602ovpgXxAhtVeBmDw" alt="Phoenix Logo" class="h-8 w-auto object-contain"><span class="font-headline-lg text-headline-lg uppercase tracking-widest text-on-surface">AVALANCHE</span><img src="https://lh3.googleusercontent.com/aida/AP1WRLuXZDGXwGoTUs3QhyDUhoKgE4SUC8U3lbvbwjPOJEpWwXbIPB4xg5uuZ0gMfZPySW8SJ_JLo6OUuL35ZsRMlm0WPrNvHqSdxLONhKoTzYEgykrTLZO1F6Vuozk3hqf3RYw-vA3k9xRmaR0ZrBiBpiQ_sDieltFtxSDKfdfXAJKoiT98uyuObl6ulTg4329C75iSW2nQ7J_LAW5DHGVLWmusdk-S1BgSk9El71LpF1tIxOykuu3smF_7vDDF" alt="Pizza Slice" class="h-8 w-auto object-contain"></div><nav class="hidden lg:flex items-center gap-gutter" data-active-classes="text-primary border-t-2 border-primary pt-1"><a href="#" class="font-headline-lg text-body-md uppercase tracking-widest transition-all text-on-surface border-t-2 border-primary pt-1">ABOUT US</a><a href="#" class="font-headline-lg text-body-md uppercase tracking-widest transition-all text-on-surface-variant hover:text-primary">CORE MENU</a><a href="#" class="font-headline-lg text-body-md uppercase tracking-widest transition-all text-on-surface-variant hover:text-primary">DEALS</a></nav><div class="flex items-center gap-gutter"><a class="relative flex items-center text-on-surface-variant hover:text-primary transition-colors" data-path="basket" href="#"><span class="material-symbols-outlined text-[28px]">shopping_basket</span><span class="absolute -top-2 -right-2 bg-primary-container text-on-primary-container text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span></a><a class="font-label-caps text-label-caps uppercase text-on-surface border border-outline px-6 py-2 hover:bg-primary hover:text-on-primary transition-all" data-path="login" href="#">Login</a></div></div></header>
+<main class="w-full pt-20 bg-background">
+<div class="flex flex-col w-full text-on-background bg-background font-body-md overflow-hidden relative">
+<section class="relative w-full h-[60vh] min-h-[500px] flex items-center justify-center pt-20 px-4 md:px-margin-desktop overflow-hidden group">
+<div class="absolute inset-0 w-full h-full bg-cover bg-center" data-alt="A beautifully designed modern pizza restaurant interior with warm lighting and a bustling atmosphere." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDhcgNLSPcn9tqHVFLw4k6mzgDPETWKMJCT-8_kctsxqOYfB6TgerSUPqWchyNNgAttJVsbeU8AlVWG73ZpWmPvGcD7GC3P194Zw06ECvWw2qJXLTvdfdzTtoutirH-n5p71sBIpeSxMP7lc5RGfq5YxgwGUXwjnHnXuvzAABbpWURfsQ_Jr4WTn7MBtWgevr0aXkgk4bowm0dMgJPlaONXgk5Y3-LW7Lk498fsOZSHKjWcR662UQ6LnQ')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/40"></div>
+<div class="relative z-10 text-center max-w-4xl mx-auto flex flex-col items-center gap-6 mt-16 md:mt-24 transform transition-all duration-1000 ease-out" id="hero-content">
+<h1 class="font-display-lg text-headline-lg-mobile md:text-display-lg text-on-surface uppercase tracking-widest leading-none drop-shadow-2xl mix-blend-screen">ABOUT US</h1>
+<div class="w-16 h-1 bg-primary mb-2"></div>
+<p class="font-label-caps text-label-caps text-primary-fixed uppercase tracking-[0.3em] text-center max-w-2xl text-shadow-sm">CRAFTED IN BECHEM. MADE FOR GOOD TIMES.</p>
+</div>
+</section>
+<section class="w-full px-4 md:px-margin-desktop py-24 md:py-32 relative z-20 bg-background">
+<div class="max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<div class="md:col-span-4 flex flex-col gap-8 transform transition-all duration-1000 ease-out stagger-element">
+<div class="flex items-center gap-4">
+<span class="font-label-caps text-label-caps text-primary [writing-mode:vertical-rl] tracking-widest rotate-180">01</span>
+<h2 class="font-display-lg text-headline-lg-mobile md:text-headline-lg text-on-surface uppercase leading-tight">Our<br>Story</h2>
+</div>
+<div class="w-full aspect-square md:aspect-[3/4] relative overflow-hidden group rounded-sm shadow-2xl">
+<div class="absolute inset-0 bg-surface-container-high transition-transform duration-700 group-hover:scale-105 bg-cover bg-center" data-alt="A macro hero shot of a finished signature pizza, beautifully lit to highlight the fresh ingredients." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBl0r7u0Ki2QBjM-JURH1jpMAEgmt8LHG_UV1NJud-8KNk0qzl6LbqXIrp5c_kV-0ad-gr82OviqPqyJJyEgTTdo7pWr4IfhyI24Q-sVmfEvoIdrGJa2_7J0CvFq3BYA8JzOREnHsle6dvDUDktD16N5ftrHNxApIrZvaT45z7qBYV4GQWQ8o6f3NDnJHjFT5SJvMhUbygeLcfVIgd_Cb03c3gMYNmh_I2_ZlVlKaA_Hc8E_67nSRzUuA')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
+</div>
+</div>
+<div class="md:col-span-1 hidden md:block"></div>
+<div class="md:col-span-7 flex flex-col justify-center gap-8 mt-12 md:mt-0 transform transition-all duration-1000 ease-out delay-100 stagger-element">
+<div class="text-body-lg text-on-surface-variant font-light leading-relaxed max-w-3xl space-y-6 text-justify">
+<p class="first-letter:text-5xl first-letter:font-display-lg first-letter:text-primary first-letter:mr-2 first-letter:float-left">BORN IN BECHEM. MADE FOR GOOD TIMES. Avalanche Pizza is a contemporary pizza brand based in Bechem, Ahafo Region, Ghana, created for people who believe great pizza should be about more than simply satisfying hunger.</p>
+<p class="">We bring together carefully prepared dough, quality ingredients, generous toppings and high-temperature baking to create pizzas with bold flavour, satisfying texture and plenty of character. Every pizza is made with attention to the details that matter, from the balance of the toppings to the final bake.</p>
+<p class="mt-6">Avalanche is built for a new generation of pizza lovers. Young, social and unapologetically particular about what they eat.</p><p class="mt-6">Our style is modern, our flavours are confident, and our approach is uncomplicated. We want customers to enjoy familiar favourites alongside combinations with a little more personality, all served through an experience that feels fresh, social and distinctly Avalanche.</p><p class="font-label-caps text-primary text-sm tracking-widest uppercase mt-8 block">Our Mission</p>
+<p class="text-on-surface border-l-2 border-primary pl-6 italic">To create consistently satisfying pizzas for a new generation of food lovers, bringing together quality, flavour and a social dining experience that feels distinctly Avalanche.</p>
+</div>
+</div>
+</div>
+</section>
+<section class="w-full px-4 md:px-margin-desktop py-24 md:py-32 bg-surface-container-low relative border-y border-outline/10">
+<div class="max-w-container-max mx-auto flex flex-col gap-16">
+<div class="flex flex-col md:flex-row justify-between items-end gap-8 transform transition-all duration-1000 ease-out stagger-element">
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-4">
+<span class="font-label-caps text-label-caps text-primary tracking-widest">02</span>
+<div class="h-[1px] w-12 bg-outline-variant"></div>
+</div>
+<h2 class="font-display-lg text-headline-lg-mobile md:text-headline-lg text-on-surface uppercase leading-tight">The Team Behind<br><span class="text-primary">The Taste</span></h2>
+</div>
+<p class="text-body-md text-on-surface-variant max-w-sm md:text-right font-light">
+                        Our kitchen is powered by passionate, dedicated individuals who treat every pizza as their masterpiece.
+                    </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<div class="group relative aspect-square md:aspect-[4/5] overflow-hidden rounded-sm shadow-2xl transform transition-all duration-1000 ease-out stagger-element delay-100 bg-surface-container-high">
+<img alt="Chef 1" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AP1WRLvjJCF2gSsDGyHKNrSTxSuJOC5qDcGqkKZIbwrCWjQbY-RP-CeT3Ef3601CsnmLFPoMv3RTOEM8WFxL1mnfbjHtkRh4g_ml5QmZAAtDuRfq7NaSOFEgZEEpFpR0D9PUU5PxkxtD7Zg2xaPz5xudhq4MP8TOoqV8ug4kLpGU6ak1YdZfoQajhC5IYiYiYbcLTOMWXIl9BCu_85gtele-uOSAQuUhEJGcXDlrx-V1J3zEePp2Tw0s0WfUFlqT">
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent opacity-90"></div>
+<div class="absolute bottom-0 left-0 p-8 w-full flex flex-col gap-2">
+<h3 class="font-display-lg text-headline-lg-mobile text-on-surface uppercase tracking-widest">Ama</h3>
+<span class="font-label-caps text-label-caps text-primary tracking-[0.2em] uppercase">Head Chef</span>
+</div>
+</div>
+<div class="group relative aspect-square md:aspect-[4/5] overflow-hidden rounded-sm shadow-2xl md:mt-16 transform transition-all duration-1000 ease-out stagger-element delay-200 bg-surface-container-high">
+<img alt="Chef 2" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AP1WRLuluczYLeM_NOsj7zPMFNYefYSMbLMzSOok3JBPvtX1GqQvCDcwzanOusyMbgOkm_vEPP8n1eXcJceNvslZTY12XbOq-hauvtexN8s8L3p-FjMRExoXKq5QG1OlQoq1YdYAEqof0B3c0Pwv-TqJYH4XTnB7TeXrnHArY0BILOlcf36LgJFx4gNVbxOlg6UPfr6vuNBOvRwl5VTOUKHiFfj0E_HTbYLK5ddUSpoYPw5_AQorBPuGDDs2Aog">
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent opacity-90"></div>
+<div class="absolute bottom-0 left-0 p-8 w-full flex flex-col gap-2">
+<h3 class="font-display-lg text-headline-lg-mobile text-on-surface uppercase tracking-widest">Efia</h3>
+<span class="font-label-caps text-label-caps text-primary tracking-[0.2em] uppercase">Operations Lead</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="w-full px-4 md:px-margin-desktop py-24 md:py-32 relative bg-background overflow-hidden">
+<div class="max-w-4xl mx-auto text-center flex flex-col gap-12 relative z-10 transform transition-all duration-1000 ease-out stagger-element">
+<span class="font-label-caps text-label-caps text-outline tracking-widest uppercase">03 // Brand Philosophy</span>
+<h2 class="font-display-lg text-display-lg text-on-surface uppercase leading-none">Our style is <span class="text-primary italic">contemporary</span>,<br>our flavours are <span class="text-primary">distinct</span>.</h2>
+<div class="text-body-lg text-on-surface-variant font-light leading-relaxed space-y-6 max-w-2xl mx-auto"><p class="">Founded with a passion for bringing authentic, expertly crafted pizza to our community. Avalanche pizza is an epitome of modern taste. We believe that great pizza is a craft, a perfect balance of heat, timing, and the finest ingredients that we can source. We keep our approach fresh and contemporary while letting quality ingredients and well-balanced flavours do the talking.</p></div>
+<div class="pt-8">
+<a class="inline-flex items-center justify-center px-8 py-4 bg-primary text-on-primary font-label-caps text-label-caps uppercase tracking-widest hover:bg-primary-fixed hover:text-on-primary-fixed transition-colors duration-300 rounded-sm group" href="#menu">
+                        Explore The Menu
+                        <span class="material-symbols-outlined ml-2 text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+</div>
+</section>
+</div>
+<script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const heroContent = document.getElementById('hero-content');
+            if (heroContent) {
+                setTimeout(() => {
+                    heroContent.classList.remove('opacity-0', 'translate-y-8');
+                }, 100);
+            }
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.remove('opacity-0', 'translate-y-8', 'scale-95');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.stagger-element').forEach((el) => {
+                observer.observe(el);
+            });
+        });
+    </script>
+</main>
+<footer class="w-full bg-surface-container-lowest border-t border-outline/10 py-16"><div class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop py-16 grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
+    <!-- Left Column: Branding & Description -->
+    <div class="md:col-span-4 flex flex-col gap-6">
+        <div class="flex items-center gap-4">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVhZHRl9HDpd4JlyKrIu37AoG7GAIcwS5AtyRfRarH7kStJ4qYeS4lalfSQKnmVWx-dqdoU97Fby3SGQHR-J07x3yy--gLLQLEp_LiCYZulfeqpt_oTgTvs3WFEQCSWrXULfscENmSiF4-08vn13S7z-982091yFl2KVBEheJncyniOLHyFrnASvvU12Hg9OJoXDTDv4rgvrKBri_jRIb7zsWquoTzzuZN1trjJP12P1IH9bfr9U0S1EdhmePrSHrcJ8Y" alt="Avalanche Phoenix" class="h-8 w-auto object-contain">
+            <span class="font-display-lg text-headline-lg uppercase tracking-widest text-on-surface">AVALANCHE</span>
+            <img src="https://lh3.googleusercontent.com/aida/AP1WRLuXZDGXwGoTUs3QhyDUhoKgE4SUC8U3lbvbwjPOJEpWwXbIPB4xg5uuZ0gMfZPySW8SJ_JLo6OUuL35ZsRMlm0WPrNvHqSdxLONhKoTzYEgykrTLZO1F6Vuozk3hqf3RYw-vA3k9xRmaR0ZrBiBpiQ_sDieltFtxSDKfdfXAJKoiT98uyuObl6ulTg4329C75iSW2nQ7J_LAW5DHGVLWmusdk-S1BgSk9El71LpF1tIxOykuu3smF_7vDDF" alt="Pizza Slice" class="h-8 w-auto object-contain">
+        </div>
+        <p class="text-body-md text-on-surface-variant leading-relaxed">
+            Great pizza begins long before it reaches the oven. Carefully prepared dough, quality ingredients and patient technique form the foundation of every Avalanche pizza
+        </p>
+    </div>
+
+    <!-- Center Column: Social Connect -->
+    <div class="md:col-span-4 flex flex-col items-center gap-4">
+        <h4 class="font-label-caps text-label-caps text-primary tracking-widest uppercase">CONNECT</h4>
+        <div class="flex gap-4">
+            <a href="#" class="w-10 h-10 flex items-center justify-center hover:opacity-80 transition-all">
+                <img src="https://lh3.googleusercontent.com/aida/AP1WRLv3cLFXWTT_EgY54iqzmu2J5tkuZWc4uv-dbJW_Ccm3U_0W4_Lw3VoA33Fok6R2TTsnDCfljKSAFA2Ep-IxCmxqgwUJh-Z7860szqkD-XcVgdvi9LesQmdgLD3ZY8E1FtzW2qcjtJZarK-Ex2DgnQpOXkPNmLDkw48NPsx-WmjXIWMyhh5Hjw-c7x8i6zA95fCV1lA1-2S1gFs40MPNtEloQ-fgaNB-kdBB3fPy-YgrZ9sEDXtCl4G0YGQe" alt="Facebook" class="w-8 h-8 object-contain">
+            </a>
+            <a href="#" class="w-10 h-10 flex items-center justify-center hover:opacity-80 transition-all">
+                <img src="https://lh3.googleusercontent.com/aida/AP1WRLttTO6h0Q19Eo4Nz3xmBAQB15BH-AyoWs2y3Fj5l76XYTpltxw83HddgOxa2jycIg2AaX9adYIpKIL6Tb8BHcfi_a9pCLYBtRub_3eD-hOIVvhYLkZPXpn8wC7fHVYxtV5tJxtsQqb4eZxxRZmEfjoDna4yjkohQKnTwpHRN3mF_Fz8wo7JKAOoVAtEyDVGP9dLKJb2xqMAPG93tSTvI53Sm9BJP4li6fOVQ0YuHxXzN7uULJ3esIJqNsw-" alt="Instagram" class="w-8 h-8 object-contain">
+            </a>
+            <a href="#" class="w-10 h-10 flex items-center justify-center hover:opacity-80 transition-all">
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAe6ydOwtePj86lh53s57lOAxohNS9ok5K7fgbxbUAOyyNrhsm-3Tlo8h9vOlcGUHBwpZLwwfGqfwZYHQvAMLe7uz3yhBO7puri17N5whdFwkn6Ve_dyMD4htjkWX_x_h_nmRwPS7B9zJ0hedQUymTopx9x2XXKsQOP6yY4p2F3WVppjqvmsUI4rK7RVJ_CxGqMwiqltgFdxeq1ZUIvChOUvKTJaLWYSAcPZt_KKLdYd48YwUv0x7GrEOwpOpmC6OMC2Q4" alt="TikTok" class="w-8 h-8 object-contain">
+            </a>
+        </div>
+    </div>
+
+    <!-- Right Column: Location & Copyright -->
+    <div class="md:col-span-4 flex flex-col gap-12 md:items-end md:text-right">
+        <div class="flex flex-col gap-2">
+            <p class="text-body-md text-on-surface-variant">
+                Location: Bechem Community centre, along Kwasu Road, Bechem, Ahafo Region, Ghana.
+            </p>
+        </div>
+        <div class="text-[10px] font-label-caps uppercase tracking-[0.4em] text-on-surface-variant/50">
+            2026 AVALANCHE PIZZA. ALL RIGHTS RESERVED
+        </div>
+    </div>
+</div></footer>
+
+
+</body></html>

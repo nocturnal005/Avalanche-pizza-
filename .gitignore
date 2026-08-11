@@ -41,3 +41,6 @@ Thumbs.db
 
 # TypeScript
 *.tsbuildinfo
+
+# Owner source assets kept on disk but out of git history
+/avalanche hero video.mp4
