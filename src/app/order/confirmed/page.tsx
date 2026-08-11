@@ -50,8 +50,8 @@ export default function OrderConfirmedPage() {
             Demonstration mode
           </p>
           <p className="mt-2 font-body-md text-body-md text-on-surface-variant">
-            No payment was taken and no order reached the kitchen. Live mobile money payment
-            switches on once the Paystack account is verified.
+            No payment was taken and no order reached the kitchen. Live mobile money and card
+            payment switch on once the Flutterwave account is verified.
           </p>
         </div>
 

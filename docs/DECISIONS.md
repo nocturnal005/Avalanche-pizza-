@@ -12,7 +12,8 @@ Decisions are recorded, not erased. When one is reversed the original stays with
 | [006](#adr-006-design-fidelity--stitch-designs-are-used-as-is) | Design fidelity — Stitch designs used as-is | Accepted |
 | [007](#adr-007-menu-site-with-ordering-by-whatsapp-and-phone) | Menu site with ordering by WhatsApp and phone | **Superseded in part by ADR-009** (2026-08-11) |
 | [008](#adr-008-no-database--menu-content-lives-in-the-repository) | No database — menu content lives in the repository | **Superseded by ADR-009** (2026-08-11) — menu content stays in the repo; a database returns for orders |
-| [009](#adr-009-online-ordering-returns-mobile-money-first-via-paystack) | Online ordering returns — mobile money first, via Paystack | **Accepted** (2026-08-11) |
+| [009](#adr-009-online-ordering-returns-mobile-money-first-via-paystack) | Online ordering returns — mobile money first, via Paystack | **Accepted** (2026-08-11); **gateway choice and card deferral superseded by ADR-010** later the same day |
+| [010](#adr-010-flutterwave-replaces-paystack-cards-enabled-from-launch) | Flutterwave replaces Paystack; cards enabled from launch | **Accepted** (2026-08-11) |
 
 ---
 
@@ -110,7 +111,9 @@ Decisions are recorded, not erased. When one is reversed the original stays with
 
 ## ADR-009: Online ordering returns — mobile money first, via Paystack
 
-**Status: Accepted (Frank, 2026-08-11).** Supersedes ADR-007 in part and ADR-008; reactivates the payment core of the v1 architecture and the Supabase half of ADR-003.
+**Status: Accepted (Frank, 2026-08-11), with two clauses superseded by [ADR-010](#adr-010-flutterwave-replaces-paystack-cards-enabled-from-launch) later the same day** — the gateway is **Flutterwave, not Paystack**, and **cards are enabled from launch, not deferred**. Everything else here stands: the basket-to-checkout flow, Bechem-only delivery, the order records, and the webhook-as-sole-authority rule. Supersedes ADR-007 in part and ADR-008; reactivates the payment core of the v1 architecture and the Supabase half of ADR-003.
+
+> Read the two clauses below with that substitution in mind. They are left as written because ADR-010's reasoning only makes sense against them — in particular, the last line of the consequences correctly predicted that enabling cards would trigger an SAQ-A review, which is exactly what ADR-010 and `docs/SECURITY.md` v2.1 §2.2 then did.
 
 **Decision.** Customers add items to a basket, check out, and pay online with Ghanaian **mobile money — MTN MoMo, Telecel Cash (formerly Vodafone Cash), and AT Money** — through Paystack's hosted checkout with the payment channel restricted to `mobile_money`. **Card payments are deferred**: enabling them later is a one-line channel-list change plus a security review, not a rebuild.
 

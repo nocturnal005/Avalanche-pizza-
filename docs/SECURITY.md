@@ -2,20 +2,31 @@
 
 | | |
 |---|---|
-| **Status** | Draft v2.0 for owner approval. **Supersedes v1.0** (the payments-era document) in full. |
-| **Scope** | Static marketing and menu site: Next.js App Router (TypeScript) built to static/ISR output on Vercel (`lhr1`, London), content committed as typed files in the repo, imagery self-hosted from the repo/Vercel CDN, frontend converted from Google Stitch HTML/Tailwind exports. Customers in Bechem & environs, Ghana. Prices in GHS. |
-| **Out of scope** | Payments of any kind, customer accounts, databases, admin surfaces, in-shop/physical security, rider operations, the content of WhatsApp conversations after handoff (covered only for privacy duties, §4). |
-| **Location** | `docs/SECURITY.md`. Any PR touching headers, DNS, the shop contact config, CI workflows, or dependencies must name the control IDs it affects. |
-| **Companion decisions** | Recorded in [`DECISIONS.md`](DECISIONS.md): **ADR-007** (descope to menu + WhatsApp ordering) and **ADR-008** (no database) supersede ADR-001, ADR-002 and ADR-004. ADR-003 (Next/Vercel, UK region), ADR-005 and ADR-006 (Stitch fidelity) still stand. |
-| **Open question carried forward** | Corporate structure (UK entity, Ghana entity, or both). §4 resolves what to do under each. |
+| **Status** | Draft **v2.1** — v2.0 amended on 2026-08-11 because **payments came back** ([ADR-009](DECISIONS.md#adr-009-online-ordering-returns--mobile-money-first-via-paystack), [ADR-010](DECISIONS.md#adr-010-flutterwave-replaces-paystack-cards-enabled-from-launch)). The amendment notice below names every section that is now wrong. |
+| **Scope** | Menu site **plus a payment channel**: Next.js App Router (TypeScript), static browsing pages on Vercel (`lhr1`, London), content committed as typed files, imagery self-hosted, frontend converted from Google Stitch exports — and two dynamic routes, `/api/payments/initiate` and `/api/payments/webhook`, which price orders and receive Flutterwave callbacks. Customers in Bechem & environs, Ghana. Prices in GHS. |
+| **Out of scope** | Customer accounts and passwords, admin surfaces, in-shop/physical security, rider operations, the content of WhatsApp conversations after handoff (covered only for privacy duties, §4). **Card data is out of scope by construction, not by absence of payments** — §2.2 explains what holds that true. |
+| **Location** | `docs/SECURITY.md`. Any PR touching headers, DNS, the shop contact config, CI workflows, dependencies, **or anything under `src/lib/payments/` or `src/app/api/`** must name the control IDs it affects. |
+| **Companion decisions** | Recorded in [`DECISIONS.md`](DECISIONS.md): **ADR-009** (ordering returns) and **ADR-010** (Flutterwave, cards from launch) reverse the payment half of **ADR-007**. ADR-008's *menu-lives-in-the-repo* half survives; its *no-database* half does not. ADR-003 (Next/Vercel, UK region), ADR-005 and ADR-006 (Stitch fidelity) still stand. |
+| **Open question carried forward** | Corporate structure (UK entity, Ghana entity, or both). §4 resolves what to do under each. **No longer deferrable** — a Flutterwave merchant account is opened by a legal entity, and that entity is the data controller. |
 
-The descope is not a trim of the old document — it inverts the risk picture. The old model was built around a database holding customer PII and a payment flow where money moved on our infrastructure. Neither exists now. **The site takes no input, stores nothing, and authenticates nobody.** What remains worth defending is the integrity of what we *publish* — above all, the phone number customers are told to trust.
+> ### ⚠ Amendment notice — read this before relying on anything below
+>
+> v2.0 was written for a site that took no input and stored nothing. **That is no longer what we are building.** The site now collects a name, a phone number and a delivery zone, prices the order server-side, and hands the customer to a payment provider.
+>
+> **Superseded — do not quote as current:** §1.2, §1.3, four rows of §2.1, and **§2.2 in full**. Each is annotated where it stands rather than deleted, so that a reader who lands on it mid-document cannot mistake it for policy.
+>
+> **New and authoritative:** threat **T8** (§2) and control **C11** (§3). C11 is what the payment code cites.
+>
+> Everything else — domain, number integrity, supply chain, CSP, privacy — is unchanged and now carries more weight, not less.
 
-Three invariants follow, and everything below is an expression of one of them:
+The descope inverted the risk picture; ADR-009 and ADR-010 have inverted part of it back. The old v1.0 model held customer PII in a database and moved money on our own infrastructure. **We are now somewhere deliberately narrower than that:** money moves on Flutterwave's infrastructure, we hold a name and a phone number for the duration of an order, and we still authenticate nobody. What was worth defending before — the integrity of what we publish — is still worth defending; a second thing now joins it, which is the integrity of what we *charge*.
+
+Four invariants follow, and everything below is an expression of one of them:
 
 1. **The build output is the product.** Security is about controlling what ends up in the deployed HTML, and proving nothing else did.
 2. **The shop's WhatsApp number is the single highest-value byte string in this repo.** Changing it silently redirects revenue to a stranger. It must be tamper-evident, not merely correct.
-3. **Control of the domain and the deploy accounts is control of the business's online identity.** There is no data to steal; the theft available is of trust.
+3. **Control of the domain and the deploy accounts is control of the business's online identity.** The theft available is of trust.
+4. **The server prices the order; the browser is never believed about money.** Every amount charged is computed from repo content, and only a signature-verified webhook may call an order paid. *(New in v2.1 — C11.)*
 
 ---
 
@@ -33,13 +44,36 @@ Three invariants follow, and everything below is an expression of one of them:
 | **Google Business Profile, Facebook/Instagram** | Google/Meta | Off-site copies of the same number and address. Google accepts *public* suggested edits. | The number changes somewhere we don't control and don't monitor |
 | **Brand reputation** | Everywhere | For a single-location shop in a town, reputation is the whole asset. | Phishing clone, defacement, or a scam traced back to "your website" |
 
-### 1.2 What we deliberately do not hold
+### 1.2 What we deliberately do not hold ~~*(v2.0 — superseded by §1.2a)*~~
 
-No customer names, phone numbers, or addresses. No order records. No accounts, passwords, sessions, or identity cookies. No database, no Supabase project, no service-role key. No payment credentials, card data, or mobile-money tokens. No webhooks, no admin panel, no server-side write path of any kind. No secrets in the runtime environment beyond what Vercel needs to build.
+> ~~No customer names, phone numbers, or addresses. No order records. No accounts, passwords, sessions, or identity cookies. No database, no Supabase project, no service-role key. No payment credentials, card data, or mobile-money tokens. No webhooks, no admin panel, no server-side write path of any kind. No secrets in the runtime environment beyond what Vercel needs to build.~~
 
-### 1.3 Contrast with the payment-taking design
+### 1.2a What we hold, and what we still refuse to *(v2.1, authoritative)*
 
-The superseded document defended: a Postgres database of Ghanaian MSISDNs and delivery addresses; a Supabase service-role key that bypassed RLS; a Paystack secret key that doubled as the webhook HMAC key; a guest-order token signing secret; admin sessions; and a server-side price computation path that had to be untrusting of every client byte. **Every one of those is gone.** A breach then meant customer harm at scale — harassment, targeted MoMo fraud, refund fraud. A breach now means the wrong content is published. That is a serious but categorically smaller and more recoverable event, and the control budget should follow.
+**Now held.** A `FLUTTERWAVE_SECRET_KEY` and a `FLUTTERWAVE_SECRET_HASH` in the Vercel runtime environment — the first can initiate charges, the second authenticates webhooks. Customer **name, phone number and delivery zone**, submitted at checkout and passed to Flutterwave. A server-side pricing path, and an inbound webhook endpoint. Once the orders table lands (ADR-009), order records containing those same fields.
+
+**Still refused, and each refusal is a control, not an accident:**
+
+| Refused | Why it stays refused |
+|---|---|
+| **Card numbers, expiry, CVV — in any form, anywhere** | Payment happens on Flutterwave's hosted page. This is the *only* thing keeping PCI scope at SAQ-A (§2.2). A card field on this site is a prohibited change, not a feature request. |
+| **Customer accounts, passwords, sessions** | No login means no credential stuffing, no session theft, no password breach. Guest checkout is a security decision as much as a UX one. |
+| **Mobile-money PINs or wallet tokens** | The customer authorises on their handset. We never see, prompt for, or transmit a PIN — and neither will any page we build. Anyone asking for one on our site is an attacker. |
+| **Any customer data we do not need to deliver the order** | The form collects what the rider needs — area, address, an optional landmark and note — and nothing beyond it. No date of birth, no second contact, no marketing consent, no "create an account?" upsell. |
+| **Analytics that identifies a person, and identity cookies** | Unchanged from v2.0. |
+| **A Supabase service-role key in the browser, ever** | When the database arrives it is server-side only, and RLS is not the last line of defence. |
+
+### 1.3 Contrast with the payment-taking design ~~*(v2.0 — superseded by §1.3a)*~~
+
+> ~~The superseded document defended: a Postgres database of Ghanaian MSISDNs and delivery addresses; a Supabase service-role key that bypassed RLS; a Paystack secret key that doubled as the webhook HMAC key; a guest-order token signing secret; admin sessions; and a server-side price computation path that had to be untrusting of every client byte. **Every one of those is gone.** A breach then meant customer harm at scale — harassment, targeted MoMo fraud, refund fraud. A breach now means the wrong content is published.~~
+
+### 1.3a Where we actually sit now *(v2.1, authoritative)*
+
+Between the two previous positions, and much closer to the safe one. v1.0's inventory was: a Postgres database of Ghanaian MSISDNs and delivery addresses, a Supabase service-role key bypassing RLS, a gateway secret doubling as the webhook HMAC key, guest-order token signing, and admin sessions.
+
+Of those, **we have taken back exactly two**: a gateway secret, and server-side pricing. The rest are still absent — no admin surface, no accounts, no order-token scheme, and (until the orders table ships) no database. Critically, the two keys are **separate secrets with separate jobs**: `FLUTTERWAVE_SECRET_KEY` initiates charges, `FLUTTERWAVE_SECRET_HASH` verifies webhooks. v1.0 reused one value for both, so leaking the API key also let an attacker forge "paid" events. We do not repeat that.
+
+**What a breach costs now.** Leak of the secret key: an attacker can create charges and read transactions on the merchant account — serious, revocable in the dashboard, and detectable in settlement. Leak of the secret hash: forged webhooks, which today mark nothing paid because fulfilment is not wired (§C11) — that changes the day the orders table lands, and the hash becomes a rotate-on-suspicion secret. Leak of order records: a list of Bechem phone numbers and what they ordered — real harm, smaller than v1.0's, and the reason §4 now has actual work to do.
 
 ---
 
@@ -56,6 +90,7 @@ Ranked by expected loss to this business, not by CVSS.
 | **T5** | Brand impersonation — a phishing clone or typosquat presenting a different number | Moderate and cheap for an attacker; small local businesses are soft targets | C8 |
 | **T6** | Defacement via a leaked deploy credential | Low, if we never create a deploy credential | C2, C7, C9 |
 | **T7** | Availability during Friday/Saturday peak | Low impact — see below | C9, C10 |
+| **T8** | **Payment tampering and forged fulfilment** — a customer paying GH₵ 1 for a GH₵ 98 order, replaying a webhook, or arriving at the confirmation page having paid nothing | *(New in v2.1.)* Certain to be probed the moment the site takes money; price tampering is the first thing anyone tries in DevTools | **C11** |
 
 ### T1 — Domain, DNS, and account takeover *(now the top risk)*
 
@@ -96,35 +131,51 @@ Best answered by **not having one**: Vercel's GitHub integration deploys without
 
 Honestly rated **low impact**, and saying so is the point of a proportionate model: **ordering does not depend on this site being up.** If the site is unreachable on a Saturday evening, customers who already have the number still order. A static site on Vercel's CDN is close to the most available thing we could build. The realistic availability risks are (a) Ghanaian mobile network conditions, which we address by keeping the page small — a performance budget, not a firewall; (b) a bandwidth-drain attack that costs money rather than uptime. Control: C10.
 
-### 2.1 Explicitly not applicable
+### T8 — Payment tampering and forged fulfilment *(new in v2.1)*
 
-Stated so nobody re-imports a control from the old document without a reason.
+The first thing anyone does to a new checkout is open DevTools and change a price. The second is to POST to whatever endpoint the page called. Both are answered structurally rather than by validation-after-the-fact: **the browser is never asked what anything costs**, so there is no number to tamper with, and the confirmation page is not evidence of payment — only a signature-verified webhook is. The residual risk is abuse of an unauthenticated endpoint that makes outbound calls, which is a real and currently open gap; C11's gap list carries it.
+
+### 2.1 Explicitly not applicable *(four rows amended in v2.1)*
+
+Stated so nobody re-imports a control from the old document without a reason — and, since v2.1, so nobody keeps claiming N/A for something that is now live.
 
 | Classic risk | Status | Why |
 |---|---|---|
-| SQL injection | **N/A** | No database, no query layer, no Supabase project. Content is typed TypeScript compiled into the build. |
-| IDOR / broken object-level authorization | **N/A** | No objects, no identifiers, no per-record access decisions. Every URL serves the same public page to everyone. |
-| Price / cart tampering | **N/A** | Prices are *display text*, not a transaction input. Nothing computes a total; the real total is agreed in chat. Editing the page in DevTools changes nothing a customer can spend. |
-| Webhook forgery (HMAC verification) | **N/A** | No webhooks, no inbound endpoints, no payment provider. |
-| Session theft / CSRF / cookie security | **N/A** | No sessions, no cookies, no state-changing requests. There is no authenticated action to forge. |
+| SQL injection | **N/A** *(for now)* | No database and no query layer yet. Content is typed TypeScript compiled into the build. **Re-evaluate the day the orders table lands** — this row expires with ADR-009's database. |
+| IDOR / broken object-level authorization | **N/A** *(for now)* | No per-record access decisions today. Order lookup by reference will create the first such decision; a `tx_ref` must not be guessable, and it is not — it carries 4 random characters on top of a timestamp, and it exposes nothing without a lookup route. |
+| **Price / cart tampering** | ⚠ **LIVE — was N/A in v2.0** | Prices are no longer display text; they feed a real charge. Answered by **C11**: the browser sends slugs and quantities only, a strict schema rejects any price-shaped field, and the server recomputes the total from repo content. DevTools can change what the customer *sees*, never what they are *charged*. |
+| **Webhook forgery (HMAC verification)** | ⚠ **LIVE — was N/A in v2.0** | `/api/payments/webhook` is a public inbound endpoint; anyone can POST to it. Answered by **C11**: HMAC-SHA256 over the raw body, constant-time compared, unsigned and mis-signed requests get 401 and nothing is parsed before the check. |
+| Session theft / CSRF / cookie security | **N/A** | Still no sessions and no identity cookies. The payment routes are unauthenticated by design: there is no ambient authority for a cross-site request to borrow, so a forged POST can only price an order for itself. |
 | Credential stuffing / account takeover (customer) | **N/A** | No customer accounts. `login.html` from Stitch **must not be converted** (see C4). |
-| PII breach at scale | **N/A** | We store no personal data. Server logs (§4.1) are the only personal data touching our stack. |
-| Rate limiting / bot abuse / CAPTCHA | **N/A** | No expensive or state-changing endpoint to abuse. Scraping a public menu is not a threat. |
-| **PCI DSS** | **Entirely out of scope** | See §2.2. |
+| **PII breach at scale** | ⚠ **LIVE (small) — was N/A in v2.0** | We now receive a name and a Ghanaian phone number per order, and will store them once the orders table exists. Answered by §4 (now with real work) and by holding nothing we do not need — no street address, no email we did not ask for. |
+| **Rate limiting / bot abuse** | ⚠ **LIVE — was N/A in v2.0** | `/api/payments/initiate` is an unauthenticated endpoint that makes an **outbound call to Flutterwave**. That is abusable in a way a static page was not. **Not yet mitigated — see the C11 gap list.** |
+| **PCI DSS** | **In scope, at SAQ-A** | ~~Entirely out of scope~~ — see the rewritten §2.2. |
 
-### 2.2 PCI DSS is out of scope — plainly
+### 2.2 PCI DSS — in scope, at SAQ-A *(rewritten in v2.1)*
 
-**PCI DSS does not apply to Avalanche Pizza's website.** PCI DSS applies to entities that **store, process, or transmit cardholder data**, or that can affect its security. This site does none of those things: there is no payment page, no payment form, no hosted-checkout redirect, no iframe, no payment JavaScript SDK, no card fields, and no payment provider integration at all. The site is a menu. It cannot even reach a Self-Assessment Questionnaire, because SAQ A — the lightest tier, which the superseded design targeted — presupposes an e-commerce channel that outsources card handling. **We have no e-commerce channel.** Mobile money is likewise absent, and in any case MoMo is not card data and sits under Bank of Ghana rules rather than PCI.
+> **v2.0 said "PCI DSS does not apply to Avalanche Pizza's website." That is no longer true and must not be quoted.** It stopped being true the moment ADR-010 enabled cards. The prediction in the old text was correct — item 1 of its own list is precisely what we then did.
 
-**What would drag PCI back into scope** — treat each of these as requiring a new security review before it ships:
+**PCI DSS applies.** Accepting cards creates an e-commerce payment channel, and this site is part of it. The whole of our compliance posture rests on one architectural fact:
 
-1. Adding any **payment button or link** on the site that sends a customer to a hosted checkout (Paystack, or a "pay now" link) — this creates an e-commerce payment channel; **SAQ A** applies.
-2. **Embedding** any payment iframe, inline checkout, or payment-provider JavaScript into our pages — our page then influences the payment form; **SAQ A-EP** applies, and our CSP and script integrity become PCI controls.
-3. Collecting card details in **any** form field we control — **SAQ D**, and a materially different document.
-4. Taking a card number **over the phone or in WhatsApp chat** and typing it into anything — MOTO acceptance, which pulls the shop's phone/chat channel and the staff device into scope.
-5. Storing card numbers, expiry dates, or CVV in **any** form — including a photo of a card in a WhatsApp thread, a note on the shop phone, or a spreadsheet.
+> **Card data never touches our servers, our JavaScript, or our DOM.** The customer leaves our page and completes payment on a Flutterwave-hosted page. We redirect and we receive a webhook; we never see a PAN.
 
-Item 5 is the realistic one and it is an operational rule, not a technical one: **staff must never accept card details by chat or phone.** Cash and MoMo on delivery/collection, arranged in chat, keep this permanently out of scope.
+That places us at **SAQ A** — the lightest of the self-assessment questionnaires, the one for merchants who fully outsource cardholder-data handling. It is a genuinely small obligation. It is also **conditional**, and three changes would forfeit it:
+
+| If we did this | We would land at | Cost |
+|---|---|---|
+| Embed a payment iframe, inline checkout, or Flutterwave's JS SDK into our pages | **SAQ A-EP** | Our CSP, SRI and script inventory become audited PCI controls. Every dependency in the checkout path enters scope. |
+| Put card fields in a form we control — even one that posts straight to the gateway | **SAQ D** | ~300 requirements. A different document, an ASV scan programme, and an obligation this business should not take on. |
+| Read a card number over the phone or in WhatsApp and type it anywhere | **MOTO acceptance** | Pulls the shop's phone, the chat channel and the staff handset into scope. |
+
+**Therefore, three prohibitions. They are architectural, not stylistic, and no ticket may quietly reverse one:**
+
+1. **No card input field may exist anywhere in this codebase.** Not a "quick pay" form, not a saved-card UI, not a test page.
+2. **No payment provider script may be loaded into our pages.** The redirect hand-off is the integration. If a future change proposes an inline SDK "for better UX", it is proposing SAQ A-EP; price that honestly first.
+3. **Staff must never accept card details by chat or phone.** This is the realistic failure and it is operational, not technical. A photo of a card in a WhatsApp thread is a cardholder-data store.
+
+**Mobile money is not card data.** MoMo sits under Bank of Ghana rules, not PCI, and a customer's PIN is entered on their own handset. We never prompt for a PIN — and because we never do, any page that appears to ask for one on our domain is an attacker's, which is worth telling staff so they can recognise a clone.
+
+**What SAQ A actually requires of us**, once the merchant account exists: confirm the outsourcing arrangement in writing, keep the redirect target on TLS, patch the site, control who can change it (C2, C7, C9), and re-attest annually. Everything in that list is already a control here for other reasons. **Owner action:** Flutterwave will state the merchant's PCI obligations at onboarding; expect an annual SAQ A attestation.
 
 ---
 
@@ -336,19 +387,53 @@ Notes that matter for this stack:
 - Keep the performance budget tight — self-hosted subset fonts, compressed images, minimal client JS. On Ghanaian mobile data this is the difference between a usable menu and an abandoned one, and it is also why the site has no third-party scripts to compromise.
 - Optional and cheap: `/.well-known/security.txt` with a contact address, so someone who notices a defacement has somewhere to report it.
 
+### C11 — Payment channel integrity *(answers T8 — new in v2.1)*
+
+**This is the control the payment code cites.** Anything under `src/lib/payments/` or `src/app/api/payments/` is governed by it, and a PR touching either must say so.
+
+**C11.1 — The server prices the order. Always.**
+`POST /api/payments/initiate` accepts **identities and quantities only**: `{kind, slug, qty}[]`, a zone id, a name and a phone. It recomputes the subtotal from `src/content/` and adds the zone's delivery fee. The zod schema is `.strict()`, so a body carrying `unitPesewas`, `total`, or any other price-shaped field is rejected outright with 422 rather than silently ignored — the difference matters, because silent ignoring is indistinguishable from silent acceptance when someone later refactors. Unavailable item or undeliverable zone → 409. *Verified: an order of 2 × Avalanche + 2 × Margherita to Bechem Town priced at GH₵ 98.00 from slugs alone; an injected `unitPesewas: 1` → 422; zone `derma` → 409.*
+
+**C11.2 — Money conversion happens in exactly one place.**
+We store integer pesewas; Flutterwave charges in **major units**. `pesewasToCedis` and `cedisToPesewas` in `src/lib/payments/flutterwave.ts` are the only conversion sites, and `pesewasToCedis` throws on a non-integer input rather than rounding. A missing conversion here is a **100× overcharge** — GH₵ 9,800 instead of GH₵ 98.00 — which is why this is a control and not a style note.
+
+**C11.3 — Only a verified webhook may call an order paid.**
+The customer's return from the redirect proves nothing; they control the URL and can type any reference they like. `/api/payments/webhook` therefore: reads the **raw** body before parsing (re-serialised JSON breaks the HMAC), computes HMAC-SHA256 with `FLUTTERWAVE_SECRET_HASH`, base64-encodes it, and compares against the `flutterwave-signature` header with `timingSafeEqual` behind a length guard — `timingSafeEqual` throws on unequal lengths, so the guard is required, not defensive decoration. Failure → 401 with nothing parsed. *Verified: unsigned → 401; forged signature → 401.*
+
+**C11.4 — The legacy `verif-hash` header is not accepted.**
+Flutterwave also supports a header carrying the shared secret in plain text. That is a bearer token, not a signature: it proves the sender knows a secret, and says nothing about whether the body was altered in flight. We accept only the HMAC.
+
+**C11.5 — Fulfilment is not wired, deliberately.**
+The webhook authenticates and logs; it marks nothing paid, because the orders table does not exist yet. **This is the safe half to ship first — it cannot wrongly fulfil an order because it fulfils none.** When the table lands, three things ship together and none alone: re-verify server-to-server via Flutterwave's verify API; assert amount **and** currency **and** reference against *our* figure; record the transaction id first so redelivery is idempotent. `isFulfillable` already encodes the second.
+
+**C11.6 — Credentials.**
+`FLUTTERWAVE_SECRET_KEY` and `FLUTTERWAVE_SECRET_HASH` are **separate secrets with separate jobs** (§1.3a), server-only, never prefixed `NEXT_PUBLIC_`, and never logged — the webhook logs a summary of the event, never the raw body or a header. With no key present the site runs in **mocked-payment mode**, which is the safe default and is what lets the flow be reviewed before an account exists. `.env.example` documents both and holds neither.
+
+**C11.7 — Errors say nothing useful to an attacker.**
+A gateway failure returns a flat "Could not start the payment" with 502; provider responses are never proxied to the browser.
+
+**Known gaps — open, not solved.** Recording them here because a control section that lists only wins is a liability:
+
+1. **No rate limiting on `/api/payments/initiate`** (§2.1). It is unauthenticated and makes an outbound call per request. Before real money moves, add a per-IP limit — Vercel's firewall rules or an edge counter; a KV-backed limiter is the fallback if the platform's is not on the plan.
+2. **No idempotency store**, so a redelivered webhook is processed twice — harmless today (nothing is fulfilled), unacceptable the day C11.5 completes.
+3. **No amount cross-check against the merchant dashboard.** Until the orders table exists we cannot detect a charge whose amount disagrees with ours; the mitigation until then is that settlement is small enough to eyeball.
+
 ---
 
 ## 4. Privacy and compliance, right-sized
 
-### 4.1 What we actually process
-
-Three things, and only three:
+### 4.1 What we actually process *(expanded in v2.1 — checkout added a fourth item)*
 
 1. **Server and CDN access logs** — IP address, user agent, URL, timestamp, generated by Vercel. **IP addresses are personal data**, so this is processing, however minimal. Vercel is our **processor**; its DPA governs it. Purpose: operating and securing the site. Lawful basis: legitimate interests. Retention: Vercel's platform defaults — we neither export nor extend them.
 2. **Analytics**, if enabled — see §4.4.
 3. **The WhatsApp / telephone handoff** — see §4.3.
+4. **Checkout details** *(new)* — **name, Ghanaian phone number, delivery zone, area, street address, an optional landmark and order note, and the order's contents and total.** Collected on `/checkout`, sent to our own `/api/payments/initiate`, and transmitted to **Flutterwave** to create the payment. Purpose: taking and fulfilling an order the customer asked us to take. Lawful basis: **performance of a contract** — not consent, and not legitimate interests; the customer cannot get a pizza without it. **Flutterwave is a separate controller** for the payment itself, not our processor: it decides what it must collect and retain to settle a transaction and to meet its own AML and Bank of Ghana obligations, and we cannot instruct it otherwise. We do not receive card details from it and do not want them.
 
-Nothing else. No forms, no accounts, no cookies, no local storage of customer data, no server-side records.
+**The delivery address rides in the transaction's metadata, and that is a stopgap.** With no orders table, no admin board and no order email, the Flutterwave dashboard is currently the only place a paid order can be read — so the address goes there, or the rider has nowhere to go. Two consequences to hold honestly: it puts a Ghanaian street address in a third party's transaction record, and metadata is a poor place to keep one. **It is replaced by the orders table, not extended.** The alternative considered and rejected was collecting the address and discarding it, which would have been a worse failure — a form that asks for something it throws away.
+
+**What is *not* in item 4:** no email unless the customer volunteers one, no card data ever (§2.2), no MoMo PIN ever (§1.2a), nothing about the customer beyond delivering this order. When the orders table lands, item 4 becomes stored data rather than transient, and the following must ship with it: a **retention period** — the owner's answer, with a default proposal of **90 days** for order records, long enough for a dispute and short enough to limit a breach — and inclusion in the privacy notice below.
+
+**A synthetic email is generated when the customer gives none.** Flutterwave requires an email field; we send `orders+<txRef>@avalanchepizza.invalid`. `.invalid` is reserved by RFC 2606 and can never route, so this creates no mailbox, no contactable address, and no marketing surface — but it does mean **Flutterwave's receipt email cannot reach the customer**. That is a product consequence, not a privacy one, and the owner should know it: confirmation reaches the customer by WhatsApp, not by email.
 
 ### 4.2 Which law leads, and do we need a privacy notice
 
@@ -359,7 +444,9 @@ Nothing else. No forms, no accounts, no cookies, no local storage of customer da
 
 **A privacy notice is still required.** Two independent reasons: the transparency duty attaches to *any* processing of personal data, and server logs are processing; and Act 843 and Act 772 impose their own disclosure duties (§4.5, §4.6). A site that stores nothing still needs a page that says so.
 
-It should be short — a page, not a policy library — and must state: **who the controller is** (legal name, Bechem address, a contact route); **that the site collects no personal data directly** — no forms, no accounts, no cookies; **that server logs including IP addresses are processed by Vercel for operating and securing the site**, under legitimate interests, retained per Vercel's defaults; **what analytics is in use, or that none is**; **the WhatsApp handoff** (§4.3); **that data is hosted in the United Kingdom**; and **how to contact us about your data**. Written plainly, in English, and honest about how little there is.
+It should be short — a page, not a policy library — and must state: **who the controller is** (legal name, Bechem address, a contact route); **what checkout collects and why** — name, phone, delivery zone and order details, to take and fulfil the order, on a contract basis *(v2.1: this replaces v2.0's "the site collects no personal data directly", which is no longer true)*; **that payment is handled by Flutterwave as a separate controller, and that we never see card details**; **how long order records are kept**; **that server logs including IP addresses are processed by Vercel for operating and securing the site**, under legitimate interests, retained per Vercel's defaults; **what analytics is in use, or that none is**; **the WhatsApp handoff** (§4.3); **that data is hosted in the United Kingdom**; and **how to contact us about your data**. Written plainly, in English, and honest about how little there is.
+
+**This page does not exist yet and is now a launch blocker, not a nicety.** v2.0 could argue a notice was a formality over server logs; a checkout that collects a name and a phone number removes that argument.
 
 ### 4.3 The WhatsApp handoff — the key disclosure
 
@@ -380,6 +467,8 @@ Practical duties that follow, and belong in the shop's operating routine rather 
 The best fit for this stack is **Vercel Web Analytics** — cookieless, storing no identifier on the device, and, uniquely relevant here, **same-origin**: its script and beacon are served from `/_vercel/insights/…`, so it works under the strict `script-src 'self'` / `connect-src 'self'` CSP in C5 without a single exception. Google Analytics would require punching two holes in the CSP, adding a third-party controller, and adding a cookie banner. Plausible, Fathom or Umami are acceptable cookieless alternatives but need a `connect-src` exception.
 
 **Consequence for PECR and consent.** PECR requires consent before storing information on, or reading information from, a user's device — regardless of whether that information is personal data. **A cookieless analytics that stores nothing on the device and reads nothing from it falls outside that requirement, so no cookie banner is needed.** It still processes an IP address in transit, which is why it must be named in the privacy notice under legitimate interests, with an opt-out route on request.
+
+**The basket uses `localStorage`, and that is still not a banner.** *(v2.1.)* PECR's consent requirement carries an exemption for storage that is **strictly necessary to provide a service the user has explicitly requested**. A basket the customer filled by clicking "add", under the key `avalanche.basket.v1`, holding slugs and quantities and no identifier, is the textbook case for that exemption. The distinction that matters, and that must survive future changes: **it is exempt because it serves the customer, not us.** The day something is written to the device for our benefit — a returning-visitor id, an A/B bucket, an attribution tag — the exemption is gone and a banner is owed. Analytics does not get to hide inside the basket key.
 
 **The rule that reverses this** — write it into the notice as a maintenance trigger, because it will be tested the first time someone wants a map or a video: adding **Google Analytics, a Meta Pixel, an embedded YouTube or Google Maps frame, a chat widget, or Google-hosted fonts** changes the answer. The first four set cookies or read device state and require a compliant consent banner; Google-hosted fonts do not set a cookie but do disclose every visitor's IP to Google, which is a disclosure the notice would have to make. **C4 already removes the Google Fonts references from the Stitch exports** — that fix is a privacy control as much as a CSP one.
 
@@ -419,15 +508,20 @@ Binary. Every line is pass/fail, and the site does not go live with a fail.
 | 7 | Post-deploy + daily smoke check live, with `EXPECTED_WA_NUMBER` held as an Actions secret outside the repo | C3e |
 | 8 | Google Business Profile / Facebook / Instagram numbers verified against the pin by the owner | C3f |
 | 9 | Zero third-party origins in the build output — no `cdn.tailwindcss.com`, no `fonts.googleapis.com`, no `googleusercontent.com`; fonts self-hosted via `next/font`; `images.remotePatterns` empty | C4, C5 |
-| 10 | `login.html` not converted; no form element anywhere in the build | C4 |
+| 10 | `login.html` not converted; **no form outside `/checkout`**, and the checkout form collects name, phone and zone only — *(v2.1: was "no form element anywhere in the build")* | C4 |
 | 11 | CSP enforced (not report-only) and verified in a browser with zero console violations; inline-script hash list committed and drift check passing | C5 |
 | 12 | HSTS, `nosniff`, `Referrer-Policy: no-referrer`, `frame-ancestors 'none'`, `Permissions-Policy` all present on the production response — verified with `curl -I`, not assumed | C5 |
 | 13 | No `VERCEL_TOKEN` or any deploy credential exists; all GitHub Actions pinned to commit SHAs; no `pull_request_target` in any workflow | C7, C9 |
 | 14 | Rollback rehearsed once: a previous deployment promoted and reverted successfully | C9 |
 | 15 | Uptime monitor live with a phone-number keyword assertion; deployment notifications on; spend limit / usage alert set | C10 |
-| 16 | Privacy notice published, covering logs, analytics, and the WhatsApp handoff; **no cookie banner because no cookies** — verified with an empty cookie jar in DevTools | §4.2–4.4 |
-| 17 | Act 772 disclosures published: legal name, Bechem address, contact routes, GHS pricing with VAT position, and the "prices indicative until confirmed in chat" statement | §4.6 |
+| 16 | Privacy notice published, covering logs, analytics, the WhatsApp handoff, **checkout data, Flutterwave as a separate controller, and the order-record retention period**; **no cookie banner** — verified with an empty cookie jar, the only device storage being the strictly-necessary basket key | §4.1–4.4 |
+| 17 | Act 772 disclosures published: legal name, Bechem address, contact routes, GHS pricing with VAT position, **the delivery fee stated before payment, and the refund / cancellation route** | §4.6 |
 | 18 | Owner has actioned DPC registration (or recorded a dated decision not to, with reasons) | §4.5 |
+| **19** | **Live keys are Vercel environment variables, server-side, never `NEXT_PUBLIC_`; `.env*` git-ignored; a build with no keys still serves the site in mock mode** | C11.6 |
+| **20** | **Webhook URL registered in the Flutterwave dashboard; secret hash set there and matching Vercel; an unsigned POST to the live endpoint returns 401 — tested against production, not assumed** | C11.3 |
+| **21** | **One real end-to-end transaction of a known amount: charged total matches the site's total to the pesewa, and the settlement figure agrees.** Catches a major/minor-unit error before a customer does | C11.2 |
+| **22** | **Rate limiting live on `/api/payments/initiate`** — currently an open gap | C11 gaps |
+| **23** | **No card input field and no payment-provider script anywhere in the build output** — grepped, not assumed. Forfeiting SAQ-A must be impossible by accident | §2.2 |
 
 ### Per-stage security tasks
 
@@ -457,9 +551,19 @@ Binary. Every line is pass/fail, and the site does not go live with a fail.
 - Rehearse rollback (gate 14).
 - Owner completes the account MFA sweep, WhatsApp two-step PIN, off-site number verification, and DPC registration (gates 3, 8, 18).
 
+**Stage 6 — Payments** *(new in v2.1; ADR-009, ADR-010)*
+- Keep every price computation server-side and every money conversion inside `pesewasToCedis` / `cedisToPesewas` (C11.1, C11.2).
+- Add rate limiting to `/api/payments/initiate` before live keys are installed (gate 22).
+- Ship webhook fulfilment only as a complete set — verify API call, amount + currency + reference check, idempotency on transaction id (C11.5). Half of it is worse than none.
+- Add the CI grep for card-input fields and payment-provider scripts (gate 23) so SAQ-A cannot be forfeited by an unreviewed commit.
+- Extend the privacy notice for checkout data and agree the retention period with the owner (§4.1, gate 16).
+- Owner: open and verify the Flutterwave Ghana account, set the secret hash, register the webhook URL, and run the gate-21 transaction.
+
 ### What reopens this document
 
-Any one of these invalidates the risk picture above and requires a review before it ships: **adding a payment link, button, or embed of any kind** (§2.2 — PCI returns); **adding any form** that collects a name, phone number, or address; **adding customer accounts or any cookie**; **adding a database or any server-side write path**; **adding a third-party script, embed, map, or chat widget**; **adding an admin surface or a CMS**; **moving to WhatsApp Business API through a provider**; or **the business starting to send email from the domain**.
+**It has already reopened once.** v2.0's first trigger — *"adding a payment link, button, or embed of any kind (§2.2 — PCI returns)"* — fired on 2026-08-11 with ADR-010, and v2.1 is the review it demanded. The mechanism worked; leaving the record visible is the point.
+
+Any one of these invalidates the risk picture above and requires a review before it ships: **any card field, inline checkout, or payment-provider script** (§2.2 — this moves us off SAQ-A and is prohibited, not merely reviewable); **the orders table and webhook fulfilment going live** (C11.5, and §4 retention); **adding customer accounts or any cookie**; **writing anything to a device for our benefit rather than the customer's** (§4.4); **adding a third-party script, embed, map, or chat widget**; **adding an admin surface or a CMS**; **taking a second payment provider or a direct-charge API**; **expanding delivery beyond Bechem Town** (new zones, and street addresses become likely); **moving to WhatsApp Business API through a provider**; or **the business starting to send email from the domain**.
 
 ---
 

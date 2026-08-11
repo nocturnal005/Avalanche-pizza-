@@ -14,7 +14,7 @@ export const dynamic = 'force-dynamic';
  * THE SERVER PRICES THE ORDER. The request carries only identities and
  * quantities — never prices. Anything the browser says about money is a
  * display hint we ignore, because the browser is under the customer's
- * control. docs/SECURITY.md IV-2.
+ * control. docs/SECURITY.md C11.1.
  *
  * Without credentials this returns a mock link so the flow stays clickable
  * during review; with them it returns a real Flutterwave hosted checkout.
@@ -42,9 +42,43 @@ const bodySchema = z
         email: z.string().email().optional(),
       })
       .strict(),
+    // Where the rider goes. Collected by the design's form, so it must not be
+    // dropped on the floor — see the note above `deliveryNote`.
+    delivery: z
+      .object({
+        area: z.string().min(2).max(80),
+        address: z.string().min(2).max(160),
+        landmark: z.string().max(120).optional(),
+        notes: z.string().max(300).optional(),
+      })
+      .strict(),
     method: z.enum(['momo', 'card']),
   })
   .strict();
+
+/**
+ * Flattens the delivery details into the one place a paid order can currently
+ * be read: the transaction's metadata in the Flutterwave dashboard.
+ *
+ * This is a stopgap and is marked as one. There is no orders table yet
+ * (ADR-009), no admin board, and no email — so without this, a live order
+ * would arrive with a name, a phone number and nowhere to deliver it. It is
+ * replaced by the orders table, not extended: metadata is a reasonable place
+ * to *read* an address once, and a bad place to keep one.
+ *
+ * Values are truncated because Flutterwave's meta fields are not a database
+ * and a 300-character note should not be able to fail a payment.
+ */
+function deliveryNote(d: z.infer<typeof bodySchema>['delivery'], zoneName: string) {
+  const cut = (s: string, n: number) => (s.length > n ? `${s.slice(0, n - 1)}…` : s);
+  return {
+    zone: zoneName,
+    area: cut(d.area, 80),
+    address: cut(d.address, 160),
+    ...(d.landmark ? { landmark: cut(d.landmark, 120) } : {}),
+    ...(d.notes ? { notes: cut(d.notes, 200) } : {}),
+  };
+}
 
 export async function POST(request: Request) {
   let parsed;
@@ -82,6 +116,15 @@ export async function POST(request: Request) {
 
   // ---- Mock mode: no credentials yet ----------------------------------
   if (!isLive()) {
+    // Logged, not stored: it is the only record a demonstration order leaves,
+    // and it lets the flow be reviewed end to end before an account exists.
+    console.info('[mock-order]', {
+      txRef,
+      totalPesewas,
+      method: parsed.method,
+      customer: parsed.customer.name,
+      ...deliveryNote(parsed.delivery, zone.name),
+    });
     return NextResponse.json({
       mode: 'mock',
       txRef,
@@ -106,7 +149,7 @@ export async function POST(request: Request) {
       },
       redirectUrl: `${siteUrl()}/order/confirmed`,
       options,
-      meta: { txRef },
+      meta: { txRef, ...deliveryNote(parsed.delivery, zone.name) },
     });
 
     return NextResponse.json({ mode: 'live', txRef, totalPesewas, paymentLink });

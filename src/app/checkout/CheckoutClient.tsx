@@ -25,7 +25,7 @@ import type { DeliveryZone } from '@/content/schema';
  * collected here — Flutterwave asks for it, and asking twice invites typos.
  *
  * Prices shown are display-only. The server recomputes every amount from its
- * own data and ignores whatever this page sends; docs/SECURITY.md IV-2.
+ * own data and ignores whatever this page sends; docs/SECURITY.md C11.1.
  * Without credentials the endpoint returns a mock link and the flow still
  * runs end to end.
  */
@@ -79,6 +79,14 @@ export function CheckoutClient({ zones }: Props) {
       return;
     }
 
+    // The address fields are uncontrolled, so read them from the form itself.
+    // They must be SENT: a form that quietly discards a delivery address is
+    // worse than one that never asked for it.
+    const fd = new FormData(e.currentTarget);
+    const str = (k: string) => (fd.get(k) as string | null)?.trim() ?? '';
+    const landmark = str('landmark');
+    const notes = str('notes');
+
     setSubmitting(true);
     try {
       const res = await fetch('/api/payments/initiate', {
@@ -89,6 +97,14 @@ export function CheckoutClient({ zones }: Props) {
           lines: lines.map((l) => ({ kind: l.kind, slug: l.slug, qty: l.qty })),
           zoneId: zone?.id,
           customer: { name: fullName || 'Guest', phone: digits },
+          delivery: {
+            area: str('area'),
+            address: str('address'),
+            // Omitted rather than sent empty — the schema rejects neither, but
+            // an absent optional is cleaner than an empty string in metadata.
+            ...(landmark ? { landmark } : {}),
+            ...(notes ? { notes } : {}),
+          },
           method,
         }),
       });

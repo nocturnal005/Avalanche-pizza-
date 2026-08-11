@@ -1,14 +1,26 @@
 # Avalanche Pizza — Architecture Specification
 
-**Status:** Draft v2.0 for owner approval (Stage 2 gate). Replaces v1.0 in full.
+**Status:** Draft **v2.1** — v2.0 amended on 2026-08-11 for the return of online ordering.
 **Owner:** Frank (product); engineering executes.
 **Market:** Bechem, Ahafo Region, Ghana — "premium tasty pizza in the heart of Bechem". **Hosting:** UK (Vercel, London `lhr1`). **Currency:** Ghanaian cedis, displayed as `Ghc` per the designs; `GHS` in machine-readable metadata.
 
-This document is the single source of truth for the launch build. It supersedes the v1.0 specification (cart, checkout, Paystack, Supabase, accounts, order tracking, admin), which was descoped by the owner on 2026-08-10 and is recorded in [ADR-007](DECISIONS.md#adr-007-menu-site-with-ordering-by-whatsapp-and-phone) and [ADR-008](DECISIONS.md#adr-008-no-database--menu-content-lives-in-the-repository).
+This document is the single source of truth for the launch build. v2.0 superseded the v1.0 specification (cart, checkout, Supabase, accounts, order tracking, admin) after the owner descoped it on 2026-08-10 — [ADR-007](DECISIONS.md#adr-007-menu-site-with-ordering-by-whatsapp-and-phone), [ADR-008](DECISIONS.md#adr-008-no-database--menu-content-lives-in-the-repository).
 
-> **Scope boundary — not negotiable, not reintroduced anywhere below.**
-> No cart. No checkout. No online payment, Paystack, or payment webhooks. No customer accounts, order records, order tracking, or admin order board. No database and no Supabase. No customer personal data is collected, transmitted, or stored by this site — there is no form, no cookie, and no analytics that identifies a person.
-> What replaces all of it: **every order call-to-action is a WhatsApp deep link with a pre-filled message, with a `tel:` call link as the co-equal fallback.** The shop confirms price and delivery in the conversation.
+> ### ⚠ v2.1 amendment — the scope boundary below has moved
+>
+> On 2026-08-11 the owner reinstated online ordering ([ADR-009](DECISIONS.md#adr-009-online-ordering-returns--mobile-money-first-via-paystack)) and then chose **Flutterwave with card payments enabled from launch** ([ADR-010](DECISIONS.md#adr-010-flutterwave-replaces-paystack-cards-enabled-from-launch)). **The v2.0 boundary is struck through below rather than deleted, so that the reversal is legible rather than invisible.**
+>
+> **Now in scope:** a basket, a checkout, server-side pricing, Flutterwave hosted payment, and two dynamic routes (`/api/payments/initiate`, `/api/payments/webhook`). Customer **name, phone and delivery zone** are collected and transmitted. Order records and a database follow (ADR-009) and are **not yet built**.
+>
+> **Still out of scope, and each for a stated reason:** customer accounts and passwords; any admin order board; any **card field or payment-provider script** — that one is prohibited outright, because the hosted redirect is what keeps PCI at SAQ-A (`docs/SECURITY.md` §2.2); order tracking beyond a reference; and delivery outside Bechem Town.
+>
+> **Unchanged and still load-bearing:** WhatsApp and `tel:` remain co-equal ordering routes — paying online is now an *option*, not a replacement. Browsing pages stay static. All money stays in integer pesewas. Design fidelity (ADR-006) is untouched.
+>
+> `docs/SECURITY.md` **v2.1 §C11** governs the payment channel; the sections it supersedes are marked there.
+
+> ~~**Scope boundary — not negotiable, not reintroduced anywhere below.**~~ *(v2.0 — superseded by the amendment above.)*
+> ~~No cart. No checkout. No online payment, Paystack, or payment webhooks. No customer accounts, order records, order tracking, or admin order board. No database and no Supabase. No customer personal data is collected, transmitted, or stored by this site — there is no form, no cookie, and no analytics that identifies a person.~~
+> ~~What replaces all of it: **every order call-to-action is a WhatsApp deep link with a pre-filled message, with a `tel:` call link as the co-equal fallback.** The shop confirms price and delivery in the conversation.~~
 
 All money is integer **pesewas** (1 GHS = 100 pesewas). All content is validated with **zod at build time**. TypeScript is `strict`.
 
@@ -1005,7 +1017,7 @@ Stage 1 (architecture and security foundation) closed and was then rescoped by [
 
 ---
 
-## 13. Growth path
+## 13. Growth path *(partly realised — see 13a)*
 
 If the owner later wants real online ordering, it should be an addition, not a rewrite. Four seams in this build are shaped so that it can be — and keeping them shaped that way costs nothing today.
 
@@ -1014,9 +1026,28 @@ If the owner later wants real online ordering, it should be an addition, not a r
 3. **No price is written in JSX.** Every amount flows from `src/content/` through `formatPesewas`. A server-authoritative pricing engine would read the same source, so the numbers cannot diverge between what was advertised and what would be charged.
 4. **Nothing about the site being static is load-bearing on the *browsing* pages.** Home, Menu and Deals stay static even in a world with a cart; only new routes would need a server.
 
-What such a phase would genuinely require, none of which exists and none of which we are building: **designs from Frank** for cart, checkout, confirmation and order status ([ADR-006](DECISIONS.md#adr-006-design-fidelity--stitch-designs-are-used-as-is) — the reason this scope change happened); a payment provider (the Paystack analysis in [ADR-002](DECISIONS.md#adr-002-paystack-as-the-payment-provider) remains correct for this market and is preserved rather than deleted); and a data store for orders, with the privacy and PCI obligations that returns to the project (`docs/SECURITY.md` §2.2).
+What such a phase would genuinely require, none of which exists and none of which we are building: **designs from Frank** for cart, checkout, confirmation and order status ([ADR-006](DECISIONS.md#adr-006-design-fidelity--stitch-designs-are-used-as-is) — the reason this scope change happened); a payment provider; and a data store for orders, with the privacy and PCI obligations that returns to the project (`docs/SECURITY.md` §2.2).
 
-That is the whole growth story, and it stays a story until the owner says otherwise.
+~~That is the whole growth story, and it stays a story until the owner says otherwise.~~
+
+### 13a. The owner said otherwise *(v2.1 — what actually got built)*
+
+He said otherwise on 2026-08-11, and the requirement above was met in the order it was written: Frank supplied basket, checkout and order-tracking designs, chose Flutterwave, and enabled cards.
+
+**The four seams held, which is the useful thing to record.** All four earned their keep rather than merely sounding prudent:
+
+1. **The content model was already a schema**, so `/api/payments/initiate` prices an order by reading the same `src/content/` the pages render. There is no second source of prices and therefore no way for the advertised total and the charged total to drift — the property §13.3 predicted, now doing real work.
+2. **One ordering seam** meant adding a basket changed what `<OrderCta>` renders, not the page layouts. The grids and cards did not move.
+3. **No price in JSX** is what made server-authoritative pricing a *new consumer* of existing data rather than a refactor.
+4. **Static browsing pages stayed static.** Only `/checkout` and the two API routes are dynamic; Home, Menu, Deals and About are byte-identical in nature to before.
+
+**What is genuinely new and was not anticipated here:**
+
+- **Money leaves the type system at the boundary.** Internally everything is integer pesewas; Flutterwave takes decimal cedis. The conversion lives in exactly two functions and nowhere else (`docs/SECURITY.md` C11.2), because a missed conversion is a 100× overcharge rather than a rounding bug.
+- **The browser is now an untrusted input source.** v2.0 had no input to distrust. The request carries slugs and quantities; a strict schema rejects anything price-shaped.
+- **A webhook is the authority on payment, not the customer's redirect.** The confirmation page is a courtesy, not evidence.
+
+**Still not built, and the honest blocker list:** the **orders table** (until it exists the webhook authenticates and logs but fulfils nothing, deliberately), **rate limiting** on the initiate route, the **privacy notice** covering checkout data, and the owner's **verified Flutterwave account**. Without credentials the site runs in mocked-payment mode, which is why the flow can be reviewed today.
 
 ---
 
@@ -1027,5 +1058,13 @@ That is the whole growth story, and it stays a story until the owner says otherw
 - `src/content/schema.ts` — zod schemas and the build-time invariants that keep the content model honest and the designs intact
 - `src/components/order/OrderCta.tsx` — the sole ordering seam; a plain `<a>`, server-rendered, and the boundary a future cart would replace
 - `scripts/assert-order-links.mjs` — the post-build gate asserting every `wa.me` and `tel:` link in the emitted HTML resolves to the configured number
+
+*Added in v2.1 — the payment channel:*
+
+- `src/lib/payments/flutterwave.ts` — the only file that talks to the gateway, and **the only place pesewas become cedis**; a missed conversion here overcharges by 100×
+- `src/app/api/payments/initiate/route.ts` — server-authoritative pricing; the browser sends slugs and quantities, never money
+- `src/app/api/payments/webhook/route.ts` — the sole authority for marking an order paid; verifies before it parses, and deliberately fulfils nothing until the orders table exists
+- `src/content/payment.ts` — the provider list and `CARDS_ENABLED`; the network codes here are Flutterwave's vocabulary, not ours
+- `src/lib/basket/store.ts` — the basket; the only thing this site writes to a customer's device, and the reason no cookie banner is owed (`docs/SECURITY.md` §4.4)
 
 **Three things need the owner before work proceeds:** the **Login decision** (§2.3) and sign-off on the **twelve fidelity deviations** (§6.7) before Stage 3 starts; the **deal-naming question** in §3.5 before Stage 4.
