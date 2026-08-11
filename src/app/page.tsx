@@ -29,6 +29,7 @@ export default function HomePage() {
               alt={hero.imageAlt}
               fill
               priority
+              quality={85}
               sizes="100vw"
               className="animate-fade-in scale-105 object-cover object-center"
             />

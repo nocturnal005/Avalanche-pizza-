@@ -45,6 +45,7 @@ export default function AboutPage() {
             alt={hero.imageAlt}
             fill
             priority
+            quality={85}
             sizes="100vw"
             className="animate-fade-in object-cover object-center"
           />
@@ -100,6 +101,7 @@ export default function AboutPage() {
                   src={image(story.image)}
                   alt={story.imageAlt}
                   fill
+                  quality={85}
                   sizes="(max-width: 767px) 100vw, 512px"
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />
@@ -169,6 +171,7 @@ export default function AboutPage() {
                     src={image(member.image)}
                     alt={member.imageAlt}
                     fill
+                    quality={85}
                     sizes="(max-width: 767px) 100vw, 560px"
                     className="object-cover transition-transform duration-1000 group-hover:scale-105"
                   />

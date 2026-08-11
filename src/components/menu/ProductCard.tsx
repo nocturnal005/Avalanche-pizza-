@@ -98,6 +98,7 @@ function FeatureCard({ product, index = 0 }: { product: Product; index?: number 
           alt={product.imageAlt}
           fill
           priority
+          quality={85}
           sizes="(max-width: 767px) 100vw, 640px"
           className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
         />

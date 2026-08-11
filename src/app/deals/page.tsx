@@ -66,6 +66,7 @@ export default function DealsPage() {
               alt={hero.imageAlt}
               fill
               priority
+              quality={85}
               sizes="100vw"
               className="animate-fade-in scale-[1.06] object-cover object-center"
             />

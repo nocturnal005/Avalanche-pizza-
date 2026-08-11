@@ -46,11 +46,15 @@ const nextConfig: NextConfig = {
 
   images: {
     formats: ['image/avif', 'image/webp'],
-    // Capped at the master width (512px). Never request an upscale — see
-    // docs/ARCHITECTURE.md 6.2.
-    deviceSizes: [256, 384, 512],
-    imageSizes: [64, 96, 128, 192],
-    qualities: [50, 62],
+    // Masters re-archived at native resolution (1024–1408px) on 2026-08-11 at
+    // the owner's ultra-high-resolution mandate. The optimizer never upscales
+    // past a source's native width, so the top rungs simply serve the largest
+    // real pixels available.
+    deviceSizes: [512, 640, 828, 1080, 1440, 1920],
+    imageSizes: [64, 96, 128, 192, 256, 384],
+    // 75 is next/image's default when no quality prop is set (cards);
+    // heroes and portraits pass 85 explicitly; 62 remains for Save-Data use.
+    qualities: [62, 75, 85],
     minimumCacheTTL: 31_536_000,
     // Deliberately empty: no remote image may be introduced without a reviewed
     // config change. All imagery is self-hosted from src/assets/images.

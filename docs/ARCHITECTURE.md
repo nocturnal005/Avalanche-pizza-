@@ -609,7 +609,7 @@ with an empty allowlist. The day someone needs a client component, that grep fai
 
 ### 6.2 Image pipeline
 
-**The masters are 512 px on the longest edge.** Every archived asset was measured: food photography is 512×512, 512×382, 512×343 or 512×279; the logo is 512×321; icons are 48×48. This is the hard constraint the pipeline is built around, and it cuts both ways — the source can never be upscaled to a crisp 1080 px hero, but it also means no image on this site can ever be heavy.
+**The masters are native-resolution as of 2026-08-11.** The original archive was captured at Stitch's 512 px default; the owner mandated ultra-high-resolution imagery, and every shipping asset was re-pulled from the same source URLs at full size — wide shots at 1408×768, square food photography and portraits at 1024×1024, the signature hero at 1264×848. Same images, more pixels (ADR-006 holds: nothing regenerated). Icons remain 48 px; the `design/` archive keeps the 512 px capture as the historical record.
 
 **Delivery.** All masters live in `src/assets/images/` and are **statically imported** (not placed in `public/`). Static imports buy four things at once: intrinsic `width`/`height` (so nothing shifts, CLS ≈ 0), an automatically generated `blurDataURL`, a content-hashed emitted filename (immutable caching, safe replacement), and a build error rather than a 404 if a file is renamed. `src/content/images.ts` maps `ImageKey → StaticImageData`, so content files stay pure data.
 
@@ -619,14 +619,14 @@ with an empty allowlist. The day someone needs a client component, that grep fai
 // next.config.ts
 images: {
   formats: ['image/avif', 'image/webp'],
-  deviceSizes: [256, 384, 512],   // capped at the master width — never request an upscale
-  imageSizes: [64, 96, 128, 192],
-  qualities: [50, 62],
+  deviceSizes: [512, 640, 828, 1080, 1440, 1920],
+  imageSizes: [64, 96, 128, 192, 256, 384],
+  qualities: [62, 75, 85],   // 75 = default (cards); 85 = heroes/portraits; 62 reserved for Save-Data
   minimumCacheTTL: 31_536_000,
 }
 ```
 
-Capping `deviceSizes` at 512 is the single most important line: without it, a DPR-3 phone requests `w=1080` and Vercel serves an upscaled, heavier file that looks no better. A 512 px source stretched across a 390 px viewport at DPR 3 is soft — and on the full-bleed hero, which carries a heavy black gradient over it, invisibly so. **Flagged for the owner:** genuinely sharp hero imagery requires higher-resolution originals from the shop. That is a content decision (his own photographs), not a design invention.
+The optimizer never upscales past a source's native width, so the top rungs are safe by construction: a request for `w=1920` against a 1408 px master returns 1408 real pixels, not a stretched fake. Heroes and portraits pass `quality={85}` explicitly; menu cards ride the 75 default. **Superseded 2026-08-11:** the original 512 px `deviceSizes` cap and q62 ceiling — and the per-image byte ceilings below — were budget decisions made when the masters themselves were 512 px thumbnails. The owner chose image fidelity over those byte targets once full-resolution masters became available; the Stage 5 budget gates must be recalibrated against the new reality rather than enforcing the old table.
 
 **Per-image ceilings, measured on the emitted AVIF:**
 
