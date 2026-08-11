@@ -38,30 +38,38 @@ export default function AboutPage() {
       <main id="main" className="w-full bg-background pt-28 lg:pt-20">
         {/* ── Hero ─────────────────────────────────────────────────────── */}
         <section className="relative flex min-h-[420px] w-full items-center justify-center overflow-hidden px-4 py-20 md:h-[60vh] md:min-h-[500px] md:px-margin-desktop">
-          {/* Still image first: it is the poster, the prefers-reduced-motion
-              view, and the fallback if the video ever fails to load. */}
-          <Image
-            src={image(hero.image)}
-            alt={hero.imageAlt}
-            fill
-            priority
-            quality={85}
-            sizes="100vw"
-            className="animate-fade-in object-cover object-center"
-          />
           {/* The looping hero video — owner-supplied, re-encoded to 1.43 MB
               (720p24 H.264 two-pass 1200kbps, audio stripped, faststart).
               Rendered as raw markup because React omits the `muted` attribute
               from server-rendered HTML, and without it in the parsed document
               mobile browsers refuse to autoplay — this page must move even
               when JavaScript is late or absent. Muted + playsinline are the
-              autoplay contract; motion-reduce:hidden yields the still image
-              to anyone who asked for less motion. */}
+              autoplay contract.
+
+              NO POSTER, AND NO STILL IMAGE BEHIND IT (owner, 2026-08-11).
+              Both used to point at `about-hero`, so the photograph painted
+              first and was then replaced by the video a moment later — a
+              visible flash on every load. The section's own dark background
+              now covers that gap instead, which reads as the video fading up
+              rather than as one picture swapping for another.
+              `preload="auto"` shortens the gap by fetching the video
+              immediately rather than waiting past its metadata.
+
+              The reduced-motion fallback moved to CSS (globals.css,
+              `.hero-video-fallback`): a background-image inside the
+              prefers-reduced-motion media query is only ever fetched by
+              browsers that match it, so the still costs nothing — not even a
+              request — for everyone else. That is the whole point; a hidden
+              <img> would still have downloaded. */}
           <div
-            className="absolute inset-0"
+            className="hero-video-fallback absolute inset-0"
             aria-hidden="true"
+            // Just a string until a reduced-motion browser reads it. Declaring
+            // the URL here rather than in the stylesheet keeps the hashed asset
+            // path resolved by the bundler instead of hand-written.
+            style={{ '--hero-fallback': `url(${image(hero.image).src})` } as React.CSSProperties}
             dangerouslySetInnerHTML={{
-              __html: `<video class="h-full w-full object-cover object-center motion-reduce:hidden" autoplay loop muted playsinline preload="metadata" poster="${image(hero.image).src}" disablepictureinpicture disableremoteplayback><source src="/videos/about-hero-2.mp4" type="video/mp4"/></video>`,
+              __html: `<video class="h-full w-full object-cover object-center motion-reduce:hidden" autoplay loop muted playsinline preload="auto" disablepictureinpicture disableremoteplayback><source src="/videos/about-hero-2.mp4" type="video/mp4"/></video>`,
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/40" />

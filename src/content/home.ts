@@ -41,12 +41,28 @@ export const home = {
     linkLabel: 'Explore Core Menu',
   },
 
+  /**
+   * The two cards the homepage leads with.
+   *
+   * OPEN MISMATCH ON THE FIRST CARD (raised with the owner, 2026-08-11).
+   * `slug: 'margherita'` drives the heading and the price, so the card reads
+   * "Margherita — San Marzano D.O.P., fresh mozzarella di bufala, organic
+   * basil" while the photograph he chose shows a pizza loaded with peppers,
+   * onions, mushrooms and olives. The image was replaced exactly as asked;
+   * pointing the card at a different product is a merchandising decision and
+   * his to make. `earths-bounty` on the Core Menu matches the photograph and
+   * carries the same Vegetarian badge, so the fix is one word here if he
+   * wants it.
+   */
   featured: [
     {
       slug: 'margherita',
       image: 'home-feature-margherita',
+      // Describes the photograph, which the owner replaced on 2026-08-11 with
+      // a loaded vegetarian pizza. Alt text has to match the picture, not the
+      // card's heading — see the note under `featured` about that mismatch.
       imageAlt:
-        'Margherita pizza with San Marzano tomato, buffalo mozzarella and blistered basil, shot from above',
+        'A vegetarian pizza on a rustic wooden table, topped with red and green peppers, red onion, mushrooms, black olives and basil on a blistered, charred crust, shot from above',
       description:
         'San Marzano D.O.P., fresh mozzarella di bufala, organic basil, extra virgin olive oil, wood-fired to a blistered perfection.',
       badge: { label: 'Vegetarian', tone: 'secondary' },
@@ -55,7 +71,8 @@ export const home = {
     {
       slug: 'pepperoni',
       image: 'home-feature-pepperoni',
-      imageAlt: 'Pepperoni pizza with cupped, charred pepperoni and melted provolone',
+      imageAlt:
+        'A pepperoni pizza on a slate board, crisped pepperoni over melted mozzarella, with friends laughing around a table in the warmly lit restaurant behind it',
       description:
         'Artisan cupping pepperoni, aged provolone, house-made spicy arrabbiata sauce, finished with a hot honey drizzle.',
       badge: { label: 'Spicy', tone: 'error' },

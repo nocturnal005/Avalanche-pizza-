@@ -364,6 +364,19 @@
   .hover-lift:hover {
     transform: none;
   }
+  /* The About hero video is hidden under reduced motion (motion-reduce:hidden),
+     which would otherwise leave that section blank. The still returns here, and
+     ONLY here: a background-image declared inside a media query is never fetched
+     by a browser that does not match it, so anyone who wants motion pays nothing
+     — not even a request — for a fallback they will never see. A hidden <img>
+     would still have downloaded, which is why this is CSS and not markup.
+     --hero-fallback is set on the element so the bundler keeps owning the
+     hashed asset path. */
+  .hero-video-fallback {
+    background-image: var(--hero-fallback);
+    background-position: center;
+    background-size: cover;
+  }
 }
 
 /* Data-saving users lose decorative motion and imagery weight where the

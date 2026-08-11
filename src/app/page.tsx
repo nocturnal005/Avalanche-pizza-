@@ -125,6 +125,12 @@ export default function HomePage() {
                         src={image(card.image)}
                         alt={card.imageAlt}
                         fill
+                        // 85, not the 75 cards normally take. These are the
+                        // largest photographs on the homepage, and since
+                        // 2026-08-11 they sit on 1024px masters rather than
+                        // 1408px ones — less pixel headroom to spend on
+                        // compression, so spend less of it.
+                        quality={85}
                         sizes="(max-width: 767px) 100vw, 560px"
                         className="object-cover transition-transform duration-[1500ms] ease-out group-hover:scale-110"
                       />
