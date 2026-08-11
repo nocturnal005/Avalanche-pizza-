@@ -1,11 +1,10 @@
 import Image from 'next/image';
 
 import { Icon, type IconName } from '@/components/ui/Icon';
-import { OrderCta } from '@/components/order/OrderCta';
+import { AddToBasket } from '@/components/basket/AddToBasket';
 import { image } from '@/content/images';
 import type { Deal } from '@/content';
 import { formatPesewas } from '@/lib/money';
-import { buildDealMessage } from '@/lib/whatsapp';
 
 /**
  * The four deal cards. The design gives each a distinct shape rather than one
@@ -18,13 +17,15 @@ import { buildDealMessage } from '@/lib/whatsapp';
  *   standard Gathering — 4 cols, bare icon, corner glow
  */
 
-function message(deal: Deal) {
-  return buildDealMessage({
+function basketLine(deal: Deal) {
+  return {
+    id: `deal:${deal.slug}`,
+    kind: 'deal' as const,
+    slug: deal.slug,
     name: deal.name,
-    pricePesewas: deal.pricePesewas,
-    includes: deal.includes,
-    ref: `web/deals/${deal.slug}`,
-  });
+    unitPesewas: deal.pricePesewas,
+    tags: [...deal.includes],
+  };
 }
 
 export function DealCardWide({ deal, stagger = 1 }: { deal: Deal; stagger?: number }) {
@@ -68,15 +69,9 @@ export function DealCardWide({ deal, stagger = 1 }: { deal: Deal; stagger?: numb
           <span className="font-headline-lg text-[32px] tabular text-on-surface">
             {formatPesewas(deal.pricePesewas)}
           </span>
-          <OrderCta
-            message={message(deal)}
-            variant="outline"
-            showIcon={false}
-            ariaLabel={`Order ${deal.name} on WhatsApp`}
-            className="!border-primary !text-primary hover:!bg-primary hover:!text-on-primary !tracking-[0.2em]"
-          >
-            Order This Deal
-          </OrderCta>
+          <AddToBasket line={basketLine(deal)} variant="outline" className="!tracking-[0.2em]">
+            Add to Basket
+          </AddToBasket>
         </div>
       </div>
     </article>
@@ -130,16 +125,9 @@ export function DealCardTall({ deal, stagger = 2 }: { deal: Deal; stagger?: numb
           <span className="text-right font-headline-lg text-[36px] tabular text-on-surface md:text-[40px]">
             {formatPesewas(deal.pricePesewas)}
           </span>
-          <OrderCta
-            message={message(deal)}
-            variant="outline"
-            showIcon={false}
-            ariaLabel={`Order ${deal.name} on WhatsApp`}
-            className="w-full !py-4 !tracking-[0.2em]"
-          >
-            Order This Deal
-            <Icon name="arrow_forward" className="ml-2 inline size-4" />
-          </OrderCta>
+          <AddToBasket line={basketLine(deal)} variant="outline" className="w-full !py-4 !tracking-[0.2em]">
+            Add to Basket
+          </AddToBasket>
         </div>
       </div>
     </article>
@@ -204,15 +192,13 @@ export function DealCardStandard({
           <span className="font-headline-lg text-[28px] tabular text-on-surface">
             {formatPesewas(deal.pricePesewas)}
           </span>
-          <OrderCta
-            message={message(deal)}
-            variant="bare"
-            showIcon={false}
-            ariaLabel={`Order ${deal.name} on WhatsApp`}
-            className="hover:!text-secondary"
+          <AddToBasket
+            line={basketLine(deal)}
+            variant="outline"
+            className="!px-4 !py-2 !text-[10px]"
           >
-            Order →
-          </OrderCta>
+            Add
+          </AddToBasket>
         </div>
       </div>
     </article>

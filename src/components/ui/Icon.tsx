@@ -20,7 +20,10 @@ export type IconName =
   | 'architecture'
   | 'filter_3'
   | 'menu'
-  | 'close';
+  | 'close'
+  | 'basket'
+  | 'check'
+  | 'trash';
 
 const PATHS: Record<IconName, React.ReactNode> = {
   whatsapp: (
@@ -50,6 +53,13 @@ const PATHS: Record<IconName, React.ReactNode> = {
   menu: <path d="M3 6h18v2H3V6Zm0 5h18v2H3v-2Zm0 5h18v2H3v-2Z" />,
   close: (
     <path d="M18.3 5.71 12 12.01l-6.3-6.3-1.4 1.41 6.29 6.3-6.3 6.29 1.41 1.41 6.3-6.29 6.29 6.29 1.41-1.41-6.29-6.3 6.29-6.29-1.4-1.41Z" />
+  ),
+  basket: (
+    <path d="M17 8h3a1 1 0 0 1 .97 1.24l-2.2 9A1 1 0 0 1 17.8 19H6.2a1 1 0 0 1-.97-.76l-2.2-9A1 1 0 0 1 4 8h3a5 5 0 0 1 10 0Zm-2 0a3 3 0 0 0-6 0h6Zm-6.5 4a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm7 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z" />
+  ),
+  check: <path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17Z" />,
+  trash: (
+    <path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12ZM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4Z" />
   ),
 };
 

@@ -1,10 +1,9 @@
 import Image from 'next/image';
 
-import { OrderCta } from '@/components/order/OrderCta';
+import { AddToBasket } from '@/components/basket/AddToBasket';
 import { image } from '@/content/images';
-import { availableToppingNames, priceOf, sizeLabelOf, type Product } from '@/content';
+import { priceOf, sizeLabelOf, type Product } from '@/content';
 import { formatPesewas } from '@/lib/money';
-import { buildItemMessage } from '@/lib/whatsapp';
 
 /**
  * The Core Menu bento card, in the three variants the design uses.
@@ -14,15 +13,18 @@ import { buildItemMessage } from '@/lib/whatsapp';
  * up over the bottom 48px of the photo so the scrim fades into the card.
  */
 
-function orderMessage(product: Product) {
-  return buildItemMessage({
+function basketLine(product: Product) {
+  return {
+    id: `product:${product.slug}`,
+    kind: 'product' as const,
+    slug: product.slug,
     name: product.name,
-    pricePesewas: priceOf(product),
+    unitPesewas: priceOf(product),
     sizeLabel: sizeLabelOf(product),
-    chooseToppings: product.chooseToppings,
-    availableToppings: product.chooseToppings ? availableToppingNames : undefined,
-    ref: `web/menu/${product.slug}`,
-  });
+    tags: product.chooseToppings
+      ? [`Choose ${product.chooseToppings} toppings in chat`]
+      : undefined,
+  };
 }
 
 const SPAN: Record<Product['layout'], string> = {
@@ -71,15 +73,9 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         <p className="mb-3 text-center font-label-caps text-lg font-medium tabular text-secondary-container">
           {price}
         </p>
-        <OrderCta
-          message={orderMessage(product)}
-          variant="ghost"
-          showIcon={false}
-          ariaLabel={`Order ${product.name} on WhatsApp`}
-          className="!py-2 !text-[10px] !tracking-[0.1em]"
-        >
-          Order on WhatsApp
-        </OrderCta>
+        <AddToBasket line={basketLine(product)} variant="ghost" className="!py-2 !text-[10px]">
+          Add to Basket
+        </AddToBasket>
       </div>
     </article>
   );
@@ -126,14 +122,13 @@ function FeatureCard({ product, index = 0 }: { product: Product; index?: number 
           {product.description}
         </p>
         <div className="mt-auto">
-          <OrderCta
-            message={orderMessage(product)}
+          <AddToBasket
+            line={basketLine(product)}
             variant="primary"
-            ariaLabel={`Order ${product.name} on WhatsApp`}
             className="w-full md:w-auto"
           >
-            Order on WhatsApp
-          </OrderCta>
+            Add to Basket
+          </AddToBasket>
         </div>
       </div>
     </article>

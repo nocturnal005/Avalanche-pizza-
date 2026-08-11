@@ -3,6 +3,7 @@ import Image from 'next/image';
 
 import phoenix from '@/assets/images/brand-phoenix.png';
 import slice from '@/assets/images/brand-slice.jpg';
+import { BasketBadge } from '@/components/basket/BasketBadge';
 import { OrderCta } from '@/components/order/OrderCta';
 import { buildGeneralMessage } from '@/lib/whatsapp';
 
@@ -15,15 +16,13 @@ export type ActiveRoute = 'home' | 'about' | 'menu' | 'deals' | 'none';
  * All three nav tabs are present as designed. About Us points at /about, which
  * is awaiting Frank's design — until it lands the route does not exist.
  *
- * Still withheld:
- *   • the basket — there is no cart, and a basket that opens WhatsApp would
- *     lie about what happens next;
- *   • Login — there are no accounts, and a login form that authenticates
- *     nothing invites people to type a real password into a dead input.
+ * The basket is back (ADR-009): a real basket now exists, so the designed
+ * icon-with-count-badge does what it looks like it does.
  *
- * An "Order on WhatsApp" control occupies the slot the Login button held,
- * reusing that button's exact treatment: 1px outline, label-caps uppercase,
- * px-6 py-2, primary fill on hover.
+ * Still withheld: Login — there are no accounts, and a login form that
+ * authenticates nothing invites people to type a real password into a dead
+ * input. The WhatsApp control keeps that slot as the secondary ordering path,
+ * reusing the Login button's exact treatment.
  */
 
 const NAV: { href: string; label: string; route: ActiveRoute }[] = [
@@ -81,14 +80,17 @@ export function SiteHeader({ active = 'none' }: { active?: ActiveRoute }) {
           })}
         </nav>
 
-        <OrderCta
-          message={buildGeneralMessage('web/header')}
-          variant="outline"
-          className="!px-4 !py-2 text-[10px] lg:!px-6 lg:text-label-caps"
-        >
-          <span className="hidden sm:inline">Order on WhatsApp</span>
-          <span className="sm:hidden">Order</span>
-        </OrderCta>
+        <div className="flex items-center gap-4 lg:gap-gutter">
+          {/* Restored under ADR-009 — there is a real basket again. */}
+          <BasketBadge />
+          <OrderCta
+            message={buildGeneralMessage('web/header')}
+            variant="outline"
+            className="!hidden !px-4 !py-2 text-[10px] sm:!inline-flex lg:!px-6 lg:text-label-caps"
+          >
+            WhatsApp
+          </OrderCta>
+        </div>
       </div>
 
       {/* Mobile nav strip — the exports are desktop-only, so this layout is ours.
