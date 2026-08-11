@@ -55,6 +55,23 @@ export default function AboutPage() {
               `preload="auto"` shortens the gap by fetching the video
               immediately rather than waiting past its metadata.
 
+              about-hero-3.mp4 is CROPPED to 1280x564 (owner, 2026-08-11).
+              The generator burned a four-pointed AI sparkle into the pixels
+              at x1150-1205, y570-622 — bottom right, static in all 240
+              frames. It cannot be styled away: any CSS framing trick that
+              hides it at one viewport size lets it back in at another,
+              because object-cover reveals more of the source height as the
+              hero grows. Cropping the file above it is the only fix that
+              holds everywhere. y=564 clears the mark and passes well below
+              every shot's face — the chef sits in the upper half throughout,
+              which was the owner's explicit constraint.
+
+              Re-encoded from `avalanche hero video.mp4`, NOT from -2, so
+              there is no second generation of compression. 1.45 MB, the same
+              as the file it replaces, but over 78% of the pixels — about 30%
+              more bits per pixel. New filename because /videos/* is served
+              immutable for a year; an overwrite would never reach anyone.
+
               The reduced-motion fallback moved to CSS (globals.css,
               `.hero-video-fallback`): a background-image inside the
               prefers-reduced-motion media query is only ever fetched by
@@ -69,7 +86,7 @@ export default function AboutPage() {
             // path resolved by the bundler instead of hand-written.
             style={{ '--hero-fallback': `url(${image(hero.image).src})` } as React.CSSProperties}
             dangerouslySetInnerHTML={{
-              __html: `<video class="h-full w-full object-cover object-center motion-reduce:hidden" autoplay loop muted playsinline preload="auto" disablepictureinpicture disableremoteplayback><source src="/videos/about-hero-2.mp4" type="video/mp4"/></video>`,
+              __html: `<video class="h-full w-full object-cover object-center motion-reduce:hidden" autoplay loop muted playsinline preload="auto" disablepictureinpicture disableremoteplayback><source src="/videos/about-hero-3.mp4" type="video/mp4"/></video>`,
             }}
           />
           {/* THE FULL-BLEED SCRIM IS GONE (owner, 2026-08-11).
