@@ -19,7 +19,8 @@ const csp = [
   "font-src 'self'",
   "connect-src 'self'",
   "manifest-src 'self'",
-  "form-action 'none'",
+  // Payment redirects hand off to Flutterwave's hosted checkout.
+  "form-action 'self' https://checkout.flutterwave.com https://*.flutterwave.com",
   "frame-ancestors 'none'",
   "base-uri 'none'",
   "object-src 'none'",

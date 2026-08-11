@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import { Icon } from '@/components/ui/Icon';
-import { availableMomoProviders, CARDS_ENABLED, type MomoProvider } from '@/content/payment';
+import { availableMomoProviders, CARDS_ENABLED } from '@/content/payment';
 import { basketSubtotal, clearBasket, useBasket } from '@/lib/basket/store';
 import { formatPesewas } from '@/lib/money';
 import type { DeliveryZone } from '@/content/schema';
@@ -14,15 +14,20 @@ import type { DeliveryZone } from '@/content/schema';
  * Checkout, from the owner's design: delivery details on the left, a sticky
  * order summary on the right, payment rails beneath the CTA.
  *
- * PAYMENTS ARE MOCKED (ADR-009). The provider choice and the phone number are
- * collected exactly as the real flow needs them, then handed to a simulated
- * authorisation instead of Paystack. Swapping in the real gateway replaces
- * `mockPay` with a server action that initialises a Paystack transaction —
- * nothing else on this page changes.
+ * Payment runs through Flutterwave's HOSTED checkout (ADR-010): we post the
+ * order to /api/payments/initiate, the server prices it and returns a payment
+ * link, and the customer completes payment on Flutterwave's page. Card details
+ * and mobile money PINs are entered there, never here — that is what keeps
+ * card acceptance at PCI SAQ-A.
  *
- * Prices here are display-only. When payment becomes real, the server must
- * recompute every amount from the database and ignore whatever the client
- * sends; docs/SECURITY.md IV-2 is the standing rule.
+ * The method chosen here only orders Flutterwave's options; the customer can
+ * still switch on their page. The mobile money NUMBER is deliberately not
+ * collected here — Flutterwave asks for it, and asking twice invites typos.
+ *
+ * Prices shown are display-only. The server recomputes every amount from its
+ * own data and ignores whatever this page sends; docs/SECURITY.md IV-2.
+ * Without credentials the endpoint returns a mock link and the flow still
+ * runs end to end.
  */
 
 interface Props {
@@ -35,10 +40,9 @@ export function CheckoutClient({ zones }: Props) {
   const subtotal = basketSubtotal(lines);
 
   const [zoneId, setZoneId] = useState(zones[0]?.id ?? '');
-  const [provider, setProvider] = useState<MomoProvider['id']>(
-    availableMomoProviders[0]?.id ?? 'mtn',
-  );
-  const [momoNumber, setMomoNumber] = useState('');
+  const [method, setMethod] = useState<'momo' | 'card'>('momo');
+  const [phone, setPhone] = useState('');
+  const [fullName, setFullName] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -69,21 +73,44 @@ export function CheckoutClient({ zones }: Props) {
     e.preventDefault();
     setError(null);
 
-    // Ghanaian mobile numbers: 0XXXXXXXXX or +233XXXXXXXXX.
-    const digits = momoNumber.replace(/[^\d+]/g, '');
+    const digits = phone.replace(/[^\d+]/g, '');
     if (!/^(\+233\d{9}|0\d{9})$/.test(digits)) {
-      setError('Enter the mobile money number as 0XX XXX XXXX.');
+      setError('Enter your phone number as 0XX XXX XXXX.');
       return;
     }
 
     setSubmitting(true);
-    // Stand-in for the Paystack round trip. Deliberately a visible pause so
-    // the flow feels like the real thing during review.
-    await new Promise((r) => setTimeout(r, 1400));
+    try {
+      const res = await fetch('/api/payments/initiate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          // Identities and quantities only — the server does the pricing.
+          lines: lines.map((l) => ({ kind: l.kind, slug: l.slug, qty: l.qty })),
+          zoneId: zone?.id,
+          customer: { name: fullName || 'Guest', phone: digits },
+          method,
+        }),
+      });
 
-    const reference = `AV-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
-    clearBasket();
-    router.push(`/order/confirmed?ref=${reference}`);
+      const data = (await res.json()) as { paymentLink?: string; error?: string; mode?: string };
+      if (!res.ok || !data.paymentLink) {
+        setError(data.error ?? 'Could not start the payment. Please try again.');
+        setSubmitting(false);
+        return;
+      }
+
+      // Mock mode stays in-app; live mode hands off to Flutterwave.
+      if (data.mode === 'mock') {
+        clearBasket();
+        router.push(data.paymentLink);
+      } else {
+        window.location.href = data.paymentLink;
+      }
+    } catch {
+      setError('Network problem. Check your connection and try again.');
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -95,7 +122,24 @@ export function CheckoutClient({ zones }: Props) {
             Delivery Details
           </h2>
 
-          <Field label="Full Name" name="fullName" required autoComplete="name" />
+          <div className="flex flex-col gap-2">
+            <label
+              htmlFor="fullName"
+              className="font-label-caps text-label-caps uppercase tracking-[0.1em] text-on-surface-variant"
+            >
+              Full Name
+            </label>
+            <input
+              id="fullName"
+              name="fullName"
+              type="text"
+              required
+              autoComplete="name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              className="w-full border border-surface-container-high bg-surface-container-highest px-4 py-3 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/40 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+            />
+          </div>
 
           <div className="flex flex-col gap-2">
             <label
@@ -115,6 +159,8 @@ export function CheckoutClient({ zones }: Props) {
                 required
                 autoComplete="tel-national"
                 placeholder="24 000 0000"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
                 className="w-full border border-surface-container-high bg-surface-container-highest px-4 py-3 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/40 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
               />
             </div>
@@ -160,82 +206,40 @@ export function CheckoutClient({ zones }: Props) {
         {/* Payment */}
         <section className="flex flex-col gap-6">
           <h2 className="border-b border-surface-variant pb-4 font-label-caps text-label-caps uppercase tracking-[0.2em] text-on-surface-variant">
-            Mobile Money Payment
+            Payment
           </h2>
 
           <fieldset className="flex flex-col gap-3">
-            <legend className="mb-2 font-label-caps text-label-caps uppercase tracking-[0.1em] text-on-surface-variant">
-              Choose your provider
+            <legend className="mb-3 font-label-caps text-label-caps uppercase tracking-[0.1em] text-on-surface-variant">
+              How would you like to pay?
             </legend>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-              {availableMomoProviders.map((p) => {
-                const selected = provider === p.id;
-                return (
-                  <label
-                    key={p.id}
-                    className={`flex cursor-pointer flex-col gap-1 border px-4 py-4 transition-colors ${
-                      selected
-                        ? 'border-primary bg-primary/10'
-                        : 'border-surface-container-high bg-surface-container-highest hover:border-outline'
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="provider"
-                      value={p.id}
-                      checked={selected}
-                      onChange={() => setProvider(p.id)}
-                      className="sr-only"
-                    />
-                    <span
-                      className={`font-label-caps text-label-caps uppercase tracking-[0.1em] ${
-                        selected ? 'text-primary' : 'text-on-surface'
-                      }`}
-                    >
-                      {p.name}
-                    </span>
-                    {p.note ? (
-                      <span className="font-body-md text-[11px] text-on-surface-variant/70">
-                        {p.note}
-                      </span>
-                    ) : null}
-                  </label>
-                );
-              })}
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <MethodCard
+                selected={method === 'momo'}
+                onSelect={() => setMethod('momo')}
+                title="Mobile Money"
+                detail="MTN MoMo, Telecel Cash, AT Money"
+              />
+              {CARDS_ENABLED ? (
+                <MethodCard
+                  selected={method === 'card'}
+                  onSelect={() => setMethod('card')}
+                  title="Card"
+                  detail="Visa, Mastercard"
+                />
+              ) : null}
             </div>
           </fieldset>
 
-          <div className="flex flex-col gap-2">
-            <label
-              htmlFor="momo"
-              className="font-label-caps text-label-caps uppercase tracking-[0.1em] text-on-surface-variant"
-            >
-              Mobile Money Number
-            </label>
-            <input
-              id="momo"
-              name="momo"
-              type="tel"
-              inputMode="tel"
-              required
-              value={momoNumber}
-              onChange={(e) => setMomoNumber(e.target.value)}
-              placeholder="0XX XXX XXXX"
-              className="w-full border border-surface-container-high bg-surface-container-highest px-4 py-3 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/40 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
-            />
-            <p className="font-body-md text-[12px] text-on-surface-variant/70">
-              You will get a prompt on this number to approve the payment.
-            </p>
-            {error ? (
-              <p role="alert" className="font-body-md text-[13px] text-error">
-                {error}
-              </p>
-            ) : null}
-          </div>
+          <p className="font-body-md text-[13px] leading-relaxed text-on-surface-variant/80">
+            {method === 'momo'
+              ? 'You will choose your network and approve the payment on your phone at the next step.'
+              : 'You will enter your card details securely at the next step. They never touch this site.'}
+          </p>
 
-          {!CARDS_ENABLED ? (
-            <p className="font-label-caps text-[10px] uppercase tracking-[0.1em] text-on-surface-variant/60">
-              Card payments coming soon
+          {error ? (
+            <p role="alert" className="font-body-md text-[13px] text-error">
+              {error}
             </p>
           ) : null}
         </section>
@@ -304,7 +308,7 @@ export function CheckoutClient({ zones }: Props) {
               'Awaiting approval…'
             ) : (
               <>
-                Pay {formatPesewas(total)} with Mobile Money
+                Pay {formatPesewas(total)}
                 <Icon
                   name="arrow_forward"
                   className="size-4 transition-transform group-hover:translate-x-1"
@@ -314,22 +318,67 @@ export function CheckoutClient({ zones }: Props) {
           </button>
 
           <div className="mt-8 flex flex-wrap justify-center gap-2">
-            {availableMomoProviders.map((p) => (
+            {[
+              ...availableMomoProviders.map((p) => p.name),
+              ...(CARDS_ENABLED ? ['Visa', 'Mastercard'] : []),
+            ].map((name) => (
               <span
-                key={p.id}
+                key={name}
                 className="border border-surface-variant bg-surface-container-high px-3 py-1.5 font-label-caps text-[10px] uppercase tracking-wider text-on-surface-variant"
               >
-                {p.name}
+                {name}
               </span>
             ))}
           </div>
 
-          <p className="mt-6 text-center font-label-caps text-[10px] uppercase tracking-[0.1em] text-secondary">
+          <p className="mt-4 flex items-center justify-center gap-1.5 font-label-caps text-[10px] uppercase tracking-[0.1em] text-on-surface-variant/70">
+            Secured by Flutterwave
+          </p>
+
+          <p className="mt-3 text-center font-label-caps text-[10px] uppercase tracking-[0.1em] text-secondary">
             Demonstration mode — no real payment is taken
           </p>
         </div>
       </div>
     </form>
+  );
+}
+
+function MethodCard({
+  selected,
+  onSelect,
+  title,
+  detail,
+}: {
+  selected: boolean;
+  onSelect: () => void;
+  title: string;
+  detail: string;
+}) {
+  return (
+    <label
+      className={`flex cursor-pointer flex-col gap-1 border px-4 py-4 transition-colors ${
+        selected
+          ? 'border-primary bg-primary/10'
+          : 'border-surface-container-high bg-surface-container-highest hover:border-outline'
+      }`}
+    >
+      <input
+        type="radio"
+        name="method"
+        checked={selected}
+        onChange={onSelect}
+        className="sr-only"
+      />
+      <span
+        className={`font-label-caps text-label-caps uppercase tracking-[0.1em] ${
+          selected ? 'text-primary' : 'text-on-surface'
+        }`}
+      >
+        {title}
+      </span>
+      <span className="font-body-md text-[11px] text-on-surface-variant/70">{detail}</span>
+    </label>
   );
 }
 

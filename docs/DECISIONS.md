@@ -126,3 +126,25 @@ Decisions are recorded, not erased. When one is reversed the original stays with
 - Prices become binding at the moment of payment. The owner must confirm real prices, zone fees, and shop details before live keys — indicative-pricing language no longer covers a paid order.
 - docs/SECURITY.md needs its Phase-2 counterpart: payment integrity (webhook HMAC, idempotency ledger, amount re-verification), order-data privacy (delivery PII returns), and rate limiting return to scope. PCI remains effectively out of scope while cards are off; enabling cards later triggers the SAQ-A review ADR-007's security doc described.
 - Hard external dependency: a Paystack Ghana business account belonging to the owner. Build and end-to-end testing proceed on test keys; going live blocks on his verified account and settlement details.
+
+## ADR-010: Flutterwave replaces Paystack; cards enabled from launch
+
+**Status: Accepted (Frank, 2026-08-11).** Supersedes ADR-002 and the gateway and card-deferral clauses of ADR-009.
+
+**Decision.** **Flutterwave** is the payment gateway, using **Standard hosted checkout** (`POST /v3/payments`). **Cards are enabled from launch** alongside Ghanaian mobile money — the owner overrode his earlier deferral.
+
+**Context.** The owner identified Flutterwave as easier to operate for a Ghanaian business. Both providers cover the three Ghanaian mobile-money rails in GHS; the choice is commercial, not technical, and is his to make. He then asked for cards immediately rather than in a later phase.
+
+**Why hosted checkout, not the direct charge API.** The direct `/v3/charges?type=mobile_money_ghana` endpoint would let us collect the MoMo number on our own page — but there is no card equivalent that does not put us in the card-data path. Enabling cards therefore forces the hosted flow: the customer completes payment on Flutterwave's page, so no PAN, expiry or CVV ever touches our servers or our JavaScript. **This is the single control keeping PCI DSS scope at SAQ-A rather than SAQ-D.** Building a card form on this site is prohibited.
+
+**Integration facts, verified against Flutterwave's documentation (2026-08-11) — not assumed:**
+- **`amount` is in MAJOR units (cedis), not minor units.** This inverts the Paystack assumption baked into the v1 architecture. We store integer pesewas, so every call converts through `pesewasToCedis` / `cedisToPesewas` and nowhere else — sending `9800` where `98.00` was meant would charge a customer GH₵ 9,800.
+- Webhooks are authenticated by **HMAC-SHA256 over the raw request body, base64-encoded, in the `flutterwave-signature` header**, using the secret hash set in the dashboard. The legacy `verif-hash` header carries the shared secret in plain text — that is a bearer token, not a signature, and cannot detect a tampered payload, so it is **not accepted**.
+- Ghana mobile money `network` values are `MTN`, `VODAFONE` (Telecel Cash), `AIRTELTIGO` (AT Money).
+
+**Consequences.**
+- Two dynamic routes now exist — `/api/payments/initiate` and `/api/payments/webhook` — the first dynamic server code on a previously all-static site. Browsing pages remain static.
+- **The server prices every order** from repo content; the request carries only slugs, quantities and a zone. A strict zod schema rejects any client-supplied price outright.
+- CSP `form-action` now permits the Flutterwave hand-off; everything else stays locked down.
+- Without `FLUTTERWAVE_SECRET_KEY` the site runs in **mocked-payment mode** — the safe default, and what lets the flow be reviewed before an account exists.
+- **Still outstanding before real money moves:** the orders table (the webhook authenticates but deliberately fulfils nothing without it), Flutterwave account verification, and the owner's confirmation of real prices.
