@@ -89,11 +89,21 @@ export const toppingSchema = z.object({
   available: z.boolean().default(true),
 });
 
+export const deliveryZoneSchema = z.object({
+  id: slug,
+  name: asciiText(40),
+  feePesewas: pesewas,
+  /** Only available zones reach the checkout dropdown. */
+  available: z.boolean().default(true),
+  order: z.number().int().nonnegative(),
+});
+
 export type Size = z.infer<typeof sizeSchema>;
 export type Category = z.infer<typeof categorySchema>;
 export type Product = z.infer<typeof productSchema>;
 export type Deal = z.infer<typeof dealSchema>;
 export type Topping = z.infer<typeof toppingSchema>;
+export type DeliveryZone = z.infer<typeof deliveryZoneSchema>;
 
 /**
  * Invariants the schemas cannot express. Each one protects a property of the
@@ -103,8 +113,9 @@ export function assertContentInvariants(input: {
   products: Product[];
   deals: Deal[];
   categories: Category[];
+  zones: DeliveryZone[];
 }): void {
-  const { products, deals, categories } = input;
+  const { products, deals, categories, zones } = input;
   const fail = (message: string): never => {
     throw new Error(`Content invariant violated: ${message}`);
   };
@@ -147,6 +158,11 @@ export function assertContentInvariants(input: {
     if (!categories.some((c) => c.id === p.categoryId)) {
       fail(`"${p.name}" references unknown category "${p.categoryId}"`);
     }
+  }
+
+  // A checkout with no deliverable zone cannot take an order at all.
+  if (!zones.some((z) => z.available)) {
+    fail('no delivery zone is marked available — checkout would have nowhere to deliver');
   }
 
   if (categories.length !== 1) {

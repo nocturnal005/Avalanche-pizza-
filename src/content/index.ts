@@ -2,16 +2,19 @@ import {
   assertContentInvariants,
   categorySchema,
   dealSchema,
+  deliveryZoneSchema,
   productSchema,
   toppingSchema,
   type Category,
   type Deal,
+  type DeliveryZone,
   type Product,
   type Topping,
 } from './schema';
 import { categories as rawCategories, products as rawProducts } from './menu';
 import { deals as rawDeals } from './deals';
 import { toppings as rawToppings } from './toppings';
+import { deliveryZones as rawZones } from './delivery';
 import { IMAGE_KEYS, type ImageKey } from './images';
 
 /**
@@ -35,6 +38,7 @@ export const categories: Category[] = parseAll(categorySchema, rawCategories, 'c
 export const products: Product[] = parseAll(productSchema, rawProducts, 'product');
 export const deals: Deal[] = parseAll(dealSchema, rawDeals, 'deal');
 export const toppings: Topping[] = parseAll(toppingSchema, rawToppings, 'topping');
+export const deliveryZones: DeliveryZone[] = parseAll(deliveryZoneSchema, rawZones, 'delivery zone');
 
 // Every image key must resolve, or a card renders a broken frame.
 const validKeys = new Set<string>(IMAGE_KEYS);
@@ -44,7 +48,7 @@ for (const item of [...products, ...deals]) {
   }
 }
 
-assertContentInvariants({ products, deals, categories });
+assertContentInvariants({ products, deals, categories, zones: deliveryZones });
 
 export const availableProducts = products
   .filter((p) => p.available)
@@ -53,6 +57,21 @@ export const availableProducts = products
 export const availableDeals = deals.filter((d) => d.available);
 
 export const availableToppingNames = toppings.filter((t) => t.available).map((t) => t.name);
+
+/**
+ * The only zones a customer may choose. Checkout must read this, never the
+ * raw list — an unavailable zone reaching the dropdown means an order the
+ * kitchen cannot deliver, already paid for.
+ */
+export const availableZones = deliveryZones
+  .filter((z) => z.available)
+  .sort((a, b) => a.order - b.order);
+
+export function zoneById(id: string): DeliveryZone {
+  const found = availableZones.find((z) => z.id === id);
+  if (!found) throw new Error(`No available delivery zone with id "${id}"`);
+  return found;
+}
 
 export function productBySlug(slug: string): Product {
   const found = products.find((p) => p.slug === slug);
@@ -77,4 +96,4 @@ export function sizeLabelOf(product: Product): string {
   return product.sizes[0]?.label ?? 'Standard';
 }
 
-export type { Category, Deal, Product, Topping, ImageKey };
+export type { Category, Deal, DeliveryZone, Product, Topping, ImageKey };
