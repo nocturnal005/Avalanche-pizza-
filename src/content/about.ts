@@ -42,18 +42,24 @@ export const about = {
     headingAccent: 'The Taste',
     intro:
       'Our kitchen is powered by passionate, dedicated individuals who treat every pizza as their masterpiece.',
+    // Portraits replaced with the owner's Stitch screens on 2026-08-12; the
+    // masters are archived in design/stitch-exports/source-images/. Which
+    // photograph belongs to whom is not a guess: the second one's apron reads
+    // "AVALANCHE / OPERATIONS LEAD", which is Efia's role.
     members: [
       {
         name: 'Ama',
         role: 'Head Chef',
         image: 'about-team-ama' as ImageKey,
-        imageAlt: 'Ama, head chef, holding a freshly baked pizza in the Avalanche kitchen',
+        imageAlt:
+          'Ama, head chef, in a navy chef’s jacket holding a freshly baked pizza on a wooden peel, the lit oven behind her',
       },
       {
         name: 'Efia',
         role: 'Operations Lead',
         image: 'about-team-efia' as ImageKey,
-        imageAlt: 'Efia, operations lead, carrying a pizza past the oven',
+        imageAlt:
+          'Efia, operations lead, at the pass in an Avalanche apron with a tablet in front of her, the kitchen team working behind',
       },
     ],
   },
