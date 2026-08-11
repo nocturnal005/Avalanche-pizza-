@@ -76,8 +76,15 @@ export const products: Product[] = [
   {
     slug: 'earths-bounty',
     name: "Earth's Bounty",
+    // Worded around the vegetables both photographs of this pizza actually
+    // share (2026-08-11). The Core Menu shot below shows courgette and cherry
+    // tomatoes; the homepage shot shows peppers and black olives. Naming a
+    // fixed list would have made one of the two pictures a lie, and "seasonal"
+    // is also how a single-location shop really buys vegetables.
+    // TO PIN A FIXED RECIPE: replace this with the exact toppings and make
+    // sure both photographs match it.
     description:
-      'Charred zucchini, wild mushrooms, confit garlic, cherry tomatoes, and kalamata olives with fresh arugula.',
+      'Grilled seasonal vegetables, wild mushrooms and red onion over San Marzano tomato and mozzarella, finished with fresh basil.',
     categoryId: 'pizzas',
     sizes: [{ id: 'standard', label: 'Standard', pricePesewas: 2000 }], // Ghc 20
     badge: 'vegetarian',

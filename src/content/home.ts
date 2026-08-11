@@ -42,31 +42,30 @@ export const home = {
   },
 
   /**
-   * The two cards the homepage leads with.
+   * The two cards the homepage leads with. `slug` drives the heading and the
+   * price, which are read from the Core Menu — so the slug, the photograph and
+   * the copy below all have to describe the same pizza.
    *
-   * OPEN MISMATCH ON THE FIRST CARD (raised with the owner, 2026-08-11).
-   * `slug: 'margherita'` drives the heading and the price, so the card reads
-   * "Margherita — San Marzano D.O.P., fresh mozzarella di bufala, organic
-   * basil" while the photograph he chose shows a pizza loaded with peppers,
-   * onions, mushrooms and olives. The image was replaced exactly as asked;
-   * pointing the card at a different product is a merchandising decision and
-   * his to make. `earths-bounty` on the Core Menu matches the photograph and
-   * carries the same Vegetarian badge, so the fix is one word here if he
-   * wants it.
+   * Card 1 was `margherita` until 2026-08-11. The owner replaced its
+   * photograph with a loaded vegetarian pizza, which left the card headed
+   * "Margherita" over a picture of peppers, onions, mushrooms and olives. It
+   * now points at `earths-bounty` — his existing vegetarian pizza, already
+   * badged as such, Ghc 20 — at his direction.
    */
   featured: [
     {
-      slug: 'margherita',
+      slug: 'earths-bounty',
       image: 'home-feature-margherita',
-      // Describes the photograph, which the owner replaced on 2026-08-11 with
-      // a loaded vegetarian pizza. Alt text has to match the picture, not the
-      // card's heading — see the note under `featured` about that mismatch.
       imageAlt:
         'A vegetarian pizza on a rustic wooden table, topped with red and green peppers, red onion, mushrooms, black olives and basil on a blistered, charred crust, shot from above',
+      // Describes THIS photograph. The Core Menu's own shot of Earth's Bounty
+      // shows a different set of vegetables (courgette, cherry tomatoes), so
+      // the menu entry is worded around what the two have in common rather
+      // than contradicting this one. See the note in menu.ts.
       description:
-        'San Marzano D.O.P., fresh mozzarella di bufala, organic basil, extra virgin olive oil, wood-fired to a blistered perfection.',
+        'Sweet red and green peppers, wild mushrooms, red onion and black olives over San Marzano tomato and mozzarella, finished with fresh basil.',
       badge: { label: 'Vegetarian', tone: 'secondary' },
-      tags: ['Wood-fired', 'Traditional'],
+      tags: ['Wood-fired', 'Seasonal'],
     },
     {
       slug: 'pepperoni',
