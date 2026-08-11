@@ -1,0 +1,259 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Avalanche Pizza - Checkout</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&amp;family=Manrope:wght@400&amp;family=Metrophobic&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        /* Base typography fallbacks just in case, though Tailwind config handles classes */
+        body { font-family: 'Manrope', sans-serif; }
+        .font-metrophobic { font-family: 'Metrophobic', sans-serif; }
+        .font-jetbrains { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Custom scrollbar for a premium feel */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #131313; }
+        ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #353534; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-error-container": "#ffdad6", "tertiary": "#ffb4a8", "background": "#131313", "tertiary-container": "#fb5945", "secondary-container": "#fabd00", "on-secondary": "#3f2e00", "surface-variant": "#353534", "secondary": "#ffdf9e", "on-tertiary": "#690000", "primary-fixed-dim": "#ffb59e", "surface-container-high": "#2a2a2a", "surface": "#131313", "outline": "#ad897e", "inverse-surface": "#e5e2e1", "surface-container": "#201f1f", "surface-tint": "#ffb59e", "on-error": "#690005", "on-tertiary-fixed": "#410000", "outline-variant": "#5c4037", "inverse-on-surface": "#313030", "on-secondary-container": "#6a4e00", "surface-container-highest": "#353534", "tertiary-fixed-dim": "#ffb4a8", "on-primary-container": "#521300", "on-secondary-fixed": "#261a00", "on-primary-fixed-variant": "#852400", "tertiary-fixed": "#ffdad4", "on-primary": "#5e1700", "on-tertiary-container": "#5c0000", "inverse-primary": "#ae3200", "secondary-fixed": "#ffdf9e", "surface-container-lowest": "#0e0e0e", "primary-container": "#ff571a", "error-container": "#93000a", "on-tertiary-fixed-variant": "#920703", "on-secondary-fixed-variant": "#5b4300", "primary": "#ffb59e", "on-primary-fixed": "#3a0b00", "surface-container-low": "#1c1b1b", "on-surface-variant": "#e6beb2", "surface-dim": "#131313", "primary-fixed": "#ffdbd0", "on-background": "#e5e2e1", "surface-bright": "#393939", "secondary-fixed-dim": "#fabd00", "on-surface": "#e5e2e1", "error": "#ffb4ab"
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                    spacing: { "margin-mobile": "16px", "gutter": "24px", "container-max": "1280px", "unit": "8px", "margin-desktop": "64px" },
+                    fontFamily: {
+                        "body-md": ["Manrope"], "body-lg": ["Manrope"], "headline-lg-mobile": ["Metrophobic"], "headline-lg": ["Metrophobic"], "display-lg": ["Metrophobic"], "label-caps": ["JetBrains Mono"]
+                    },
+                    fontSize: {
+                        "body-md": ["16px", { lineHeight: "1.6", letterSpacing: "0.01em", fontWeight: "400" }],
+                        "body-lg": ["18px", { lineHeight: "1.6", letterSpacing: "0.02em", fontWeight: "400" }],
+                        "headline-lg-mobile": ["24px", { lineHeight: "1.2", letterSpacing: "0.08em", fontWeight: "400" }],
+                        "headline-lg": ["32px", { lineHeight: "1.2", letterSpacing: "0.1em", fontWeight: "400" }],
+                        "display-lg": ["48px", { lineHeight: "1.1", letterSpacing: "0.15em", fontWeight: "400" }],
+                        "label-caps": ["12px", { lineHeight: "1", letterSpacing: "0.2em", fontWeight: "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar Shared Component -->
+<header class="bg-background dark:bg-background fixed top-0 w-full z-50 border-b border-surface-variant">
+<div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-gutter max-w-container-max mx-auto w-full">
+<!-- Brand Logo -->
+<a class="font-display-lg text-display-lg tracking-widest text-primary dark:text-primary uppercase hidden md:block" href="#">
+                AVALANCHE
+            </a>
+<a class="font-headline-lg-mobile text-headline-lg-mobile tracking-widest text-primary dark:text-primary uppercase md:hidden" href="#">
+                AVALANCHE
+            </a>
+<!-- Navigation Links (Centered, Hidden on Mobile for clean checkout) -->
+<nav class="hidden md:flex space-x-8 absolute left-1/2 transform -translate-x-1/2">
+<a class="text-on-surface font-label-caps text-label-caps uppercase tracking-widest hover:text-primary transition-colors duration-300" href="#">About Us</a>
+<a class="text-on-surface font-label-caps text-label-caps uppercase tracking-widest hover:text-primary transition-colors duration-300" href="#">Core Menu</a>
+<a class="text-on-surface font-label-caps text-label-caps uppercase tracking-widest hover:text-primary transition-colors duration-300" href="#">Deals</a>
+</nav>
+<!-- Trailing Actions -->
+<div class="flex items-center space-x-6">
+<!-- Basket Icon with Badge -->
+<button class="relative text-on-surface hover:text-primary transition-colors duration-300 group">
+<span class="material-symbols-outlined text-[28px]" data-icon="shopping_basket">shopping_basket</span>
+<span class="absolute -top-2 -right-2 bg-primary-container text-on-primary-container font-label-caps text-[10px] w-5 h-5 flex items-center justify-center rounded-full border border-background">3</span>
+</button>
+<!-- Login Action -->
+<a class="hidden md:inline-flex items-center justify-center border border-primary text-primary font-label-caps text-label-caps uppercase px-6 py-3 hover:bg-primary hover:text-on-primary transition-colors duration-300" href="#">
+                    Login
+                </a>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow pt-[120px] pb-margin-desktop px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto w-full">
+<!-- Page Headline -->
+<div class="mb-12">
+<h1 class="font-display-lg text-display-lg uppercase tracking-[0.15em] text-on-surface">CHECKOUT</h1>
+</div>
+<!-- Two Column Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-gutter items-start">
+<!-- Left Column: Delivery Details Form -->
+<div class="lg:col-span-7 space-y-8">
+<div>
+<h2 class="font-label-caps text-label-caps text-primary tracking-widest mb-8 border-b border-surface-variant pb-4">DELIVERY DETAILS</h2>
+<form class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Full Name -->
+<div class="col-span-1 md:col-span-2">
+<label class="sr-only" for="fullName">Full Name</label>
+<input class="w-full bg-surface-container-low border border-surface-variant text-on-surface font-body-md px-4 py-4 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-surface-variant" id="fullName" placeholder="Full name" type="text">
+</div>
+<!-- Phone Number -->
+<div class="col-span-1 md:col-span-2 flex">
+<div class="bg-surface-container-high border border-surface-variant border-r-0 px-4 py-4 flex items-center justify-center text-on-surface-variant font-label-caps">
+                                    +233
+                                </div>
+<input class="w-full bg-surface-container-low border border-surface-variant text-on-surface font-body-md px-4 py-4 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-surface-variant" id="phone" placeholder="Phone number" type="tel">
+</div>
+<!-- Delivery Zone Dropdown -->
+<div class="col-span-1 md:col-span-2 relative">
+<label class="sr-only" for="zone">Delivery Zone</label>
+<select class="w-full bg-surface-container-low border border-surface-variant text-on-surface font-body-md px-4 py-4 appearance-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all rounded-none cursor-pointer" id="zone">
+<option class="text-surface-variant" disabled="" selected="" value="">Select delivery zone</option>
+<option value="bechem">Bechem Town — GH₵ 10 delivery</option>
+<option value="derma">Derma — GH₵ 15 delivery</option>
+<option value="techimantia">Techimantia — GH₵ 20 delivery</option>
+</select>
+<div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-surface-variant">
+<span class="material-symbols-outlined" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<!-- Area / Suburb -->
+<div class="col-span-1">
+<label class="sr-only" for="area">Area / Suburb</label>
+<input class="w-full bg-surface-container-low border border-surface-variant text-on-surface font-body-md px-4 py-4 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-surface-variant" id="area" placeholder="Area / Suburb" type="text">
+</div>
+<!-- Delivery Address -->
+<div class="col-span-1">
+<label class="sr-only" for="address">Delivery Address</label>
+<input class="w-full bg-surface-container-low border border-surface-variant text-on-surface font-body-md px-4 py-4 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-surface-variant" id="address" placeholder="Street / House No." type="text">
+</div>
+<!-- Nearby Landmark -->
+<div class="col-span-1 md:col-span-2">
+<label class="sr-only" for="landmark">Nearby Landmark</label>
+<input class="w-full bg-surface-container-low border border-surface-variant text-on-surface font-body-md px-4 py-4 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-surface-variant" id="landmark" placeholder="Nearby landmark (e.g. Opposite Shell Gas Station)" type="text">
+</div>
+<!-- Order Notes -->
+<div class="col-span-1 md:col-span-2">
+<label class="sr-only" for="notes">Order Notes</label>
+<textarea class="w-full bg-surface-container-low border border-surface-variant text-on-surface font-body-md px-4 py-4 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-surface-variant resize-none" id="notes" placeholder="Order notes (optional, e.g. Extra spicy, don't ring bell)" rows="3"></textarea>
+</div>
+</div>
+<!-- Checkbox -->
+<div class="flex items-start mt-6">
+<div class="flex items-center h-6">
+<input class="w-5 h-5 bg-background border border-surface-variant rounded-none text-primary focus:ring-primary focus:ring-offset-background focus:ring-offset-2" id="offers" type="checkbox">
+</div>
+<div class="ml-3 text-sm">
+<label class="font-body-md text-on-surface-variant cursor-pointer select-none" for="offers">Text me offers and deals (optional)</label>
+</div>
+</div>
+<!-- Privacy Notice Link -->
+<div class="pt-4">
+<a class="font-label-caps text-[10px] text-surface-variant hover:text-primary transition-colors uppercase tracking-widest" href="#">Privacy Notice</a>
+</div>
+</form>
+</div>
+</div>
+<!-- Right Column: Order Summary -->
+<div class="lg:col-span-5">
+<div class="bg-surface-container border border-surface-variant p-8 sticky top-[120px]">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant tracking-widest mb-8 border-b border-surface-variant pb-4">YOUR ORDER</h3>
+<!-- Items List -->
+<div class="space-y-6 mb-8">
+<div class="flex justify-between items-start group">
+<div class="flex space-x-4">
+<span class="font-label-caps text-on-surface-variant mt-1">1x</span>
+<div>
+<p class="font-body-md text-on-surface uppercase tracking-wide group-hover:text-primary transition-colors">The Avalanche Signature</p>
+<p class="font-label-caps text-[10px] text-surface-variant mt-1">LARGE / THIN CRUST / EXTRA CHEESE</p>
+</div>
+</div>
+<span class="font-label-caps text-on-surface whitespace-nowrap">GH₵ 95</span>
+</div>
+<div class="flex justify-between items-start group">
+<div class="flex space-x-4">
+<span class="font-label-caps text-on-surface-variant mt-1">2x</span>
+<div>
+<p class="font-body-md text-on-surface uppercase tracking-wide group-hover:text-primary transition-colors">Spicy Inferno Wings</p>
+</div>
+</div>
+<span class="font-label-caps text-on-surface whitespace-nowrap">GH₵ 70</span>
+</div>
+<div class="flex justify-between items-start group">
+<div class="flex space-x-4">
+<span class="font-label-caps text-on-surface-variant mt-1">1x</span>
+<div>
+<p class="font-body-md text-on-surface uppercase tracking-wide group-hover:text-primary transition-colors">Truffle Garlic Bread</p>
+</div>
+</div>
+<span class="font-label-caps text-on-surface whitespace-nowrap">GH₵ 35</span>
+</div>
+</div>
+<!-- Totals -->
+<div class="border-t border-surface-variant pt-6 space-y-4">
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="font-body-md">Subtotal</span>
+<span class="font-label-caps">GH₵ 200</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="font-body-md">Delivery Fee (Bechem Town)</span>
+<span class="font-label-caps">GH₵ 10</span>
+</div>
+<div class="flex justify-between items-center text-primary-fixed-dim">
+<span class="font-body-md">Discount (Elite Member)</span>
+<span class="font-label-caps">- GH₵ 15</span>
+</div>
+</div>
+<!-- Grand Total -->
+<div class="border-t border-surface-variant mt-6 pt-6 flex justify-between items-end">
+<span class="font-label-caps text-label-caps text-on-surface tracking-widest">TOTAL</span>
+<span class="font-headline-lg text-secondary-container tracking-wider">GH₵ 195</span>
+</div>
+<!-- CTA Action -->
+<button class="w-full bg-primary-container text-on-primary-container font-label-caps text-label-caps uppercase py-5 mt-10 tracking-[0.2em] hover:bg-primary transition-all duration-300 relative overflow-hidden group">
+<span class="relative z-10 flex items-center justify-center space-x-2">
+<span>PAY WITH CARD / MOBILE MONEY</span>
+<span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</span>
+<!-- Subtle hover glow effect -->
+<div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
+</button>
+<!-- Payment Methods -->
+<div class="mt-8">
+<div class="flex flex-wrap gap-2 justify-center">
+<span class="bg-surface-container-high border border-surface-variant px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider">MTN MOMO</span>
+<span class="bg-surface-container-high border border-surface-variant px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider">TELECEL CASH</span>
+<span class="bg-surface-container-high border border-surface-variant px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider">AT MONEY</span>
+<span class="bg-surface-container-high border border-surface-variant px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider">VISA</span>
+<span class="bg-surface-container-high border border-surface-variant px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider">MASTERCARD</span>
+</div>
+<div class="flex items-center justify-center space-x-2 mt-6 text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined text-[14px]" data-icon="lock">lock</span>
+<span class="font-label-caps text-[10px] tracking-widest uppercase">Secured by Paystack</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Shared Component -->
+<footer class="bg-surface-container-lowest dark:bg-surface-container-lowest w-full py-margin-desktop border-t border-surface-variant mt-24">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto text-center md:text-left">
+<!-- Brand -->
+<div class="flex flex-col space-y-4">
+<span class="font-headline-lg text-headline-lg tracking-[0.1em] text-primary dark:text-primary uppercase">AVALANCHE</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Igniting the craft of pizza.</span>
+</div>
+<!-- Links -->
+<div class="flex flex-col space-y-4 items-center md:items-start justify-center">
+<div class="flex flex-wrap gap-6 justify-center md:justify-start">
+<a class="text-on-surface-variant font-label-caps text-label-caps uppercase hover:text-secondary-container transition-colors duration-300" href="#">Facebook</a>
+<a class="text-on-surface-variant font-label-caps text-label-caps uppercase hover:text-secondary-container transition-colors duration-300" href="#">Instagram</a>
+<a class="text-on-surface-variant font-label-caps text-label-caps uppercase hover:text-secondary-container transition-colors duration-300" href="#">TikTok</a>
+<a class="text-on-surface-variant font-label-caps text-label-caps uppercase hover:text-secondary-container transition-colors duration-300" href="#">Location</a>
+</div>
+</div>
+<!-- Copyright -->
+<div class="flex items-center justify-center md:justify-end">
+<p class="font-label-caps text-[10px] text-surface-variant tracking-[0.2em]">© 2024 AVALANCHE PIZZA. ALL RIGHTS RESERVED.</p>
+</div>
+</div>
+</footer>
+</body></html>

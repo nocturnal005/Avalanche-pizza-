@@ -10,8 +10,9 @@ Decisions are recorded, not erased. When one is reversed the original stays with
 | [004](#adr-004-guest-checkout-plus-optional-accounts) | Guest checkout plus optional accounts | **Superseded by ADR-007** (2026-08-10) |
 | [005](#adr-005-google-stitch-is-the-design-source-of-truth) | Google Stitch is the design source of truth | Accepted |
 | [006](#adr-006-design-fidelity--stitch-designs-are-used-as-is) | Design fidelity — Stitch designs used as-is | Accepted |
-| [007](#adr-007-menu-site-with-ordering-by-whatsapp-and-phone) | Menu site with ordering by WhatsApp and phone | **Accepted** (2026-08-10) |
-| [008](#adr-008-no-database--menu-content-lives-in-the-repository) | No database — menu content lives in the repository | **Accepted** (2026-08-10) |
+| [007](#adr-007-menu-site-with-ordering-by-whatsapp-and-phone) | Menu site with ordering by WhatsApp and phone | **Superseded in part by ADR-009** (2026-08-11) |
+| [008](#adr-008-no-database--menu-content-lives-in-the-repository) | No database — menu content lives in the repository | **Superseded by ADR-009** (2026-08-11) — menu content stays in the repo; a database returns for orders |
+| [009](#adr-009-online-ordering-returns-mobile-money-first-via-paystack) | Online ordering returns — mobile money first, via Paystack | **Accepted** (2026-08-11) |
 
 ---
 
@@ -106,3 +107,18 @@ Decisions are recorded, not erased. When one is reversed the original stays with
 **Context.** With no orders and no accounts, the only data the site needs is content the shop controls. A database for a menu that changes occasionally is cost and operational burden without benefit; static content also makes the whole site cacheable, which directly serves the Ghana bandwidth constraint.
 
 **Consequences.** A price change is a file edit that auto-deploys — fast and fully version-controlled, but it does route content edits through a developer or through GitHub's web editor. If that friction proves real, the documented upgrade path is a lightweight git-backed CMS, which requires no change to the site's architecture.
+
+## ADR-009: Online ordering returns — mobile money first, via Paystack
+
+**Status: Accepted (Frank, 2026-08-11).** Supersedes ADR-007 in part and ADR-008; reactivates the payment core of the v1 architecture and the Supabase half of ADR-003.
+
+**Decision.** Customers add items to a basket, check out, and pay online with Ghanaian **mobile money — MTN MoMo, Telecel Cash (formerly Vodafone Cash), and AT Money** — through Paystack's hosted checkout with the payment channel restricted to `mobile_money`. **Card payments are deferred**: enabling them later is a one-line channel-list change plus a security review, not a rebuild.
+
+**Context.** ADR-007 descoped ordering because the ordering-flow screens did not exist and ADR-006 forbade inventing them. That reason has expired: the owner generated the designs himself — Basket (two variants), Checkout, Order Tracking, Track Your Order, My Account, and a Deal Builder — all archived under `design/stitch-exports/` on 2026-08-11. His checkout design specifies the delivery model (zone dropdown with fees: Bechem Town GH₵ 10, Derma GH₵ 15, Techimantia GH₵ 20) and the payment rails ("Secured by Paystack"; MTN MoMo / Telecel Cash / AT Money chips). The Paystack analysis preserved in ADR-002 applies unchanged.
+
+**Consequences.**
+- A backend returns: order records, server-side price computation, Paystack initialize/verify, and an HMAC-verified webhook as the sole authority for marking orders paid — the v1 architecture's money core. Postgres via Supabase (London) per the original ADR-003; **menu content stays in the repo** (that half of ADR-008 survives — the database holds orders, not the menu).
+- The zero-JavaScript rule narrows: browsing pages stay static and JS-free; **basket and checkout require client state** by nature. Ordering remains possible without JS via the retained fallback channel.
+- Prices become binding at the moment of payment. The owner must confirm real prices, zone fees, and shop details before live keys — indicative-pricing language no longer covers a paid order.
+- docs/SECURITY.md needs its Phase-2 counterpart: payment integrity (webhook HMAC, idempotency ledger, amount re-verification), order-data privacy (delivery PII returns), and rate limiting return to scope. PCI remains effectively out of scope while cards are off; enabling cards later triggers the SAQ-A review ADR-007's security doc described.
+- Hard external dependency: a Paystack Ghana business account belonging to the owner. Build and end-to-end testing proceed on test keys; going live blocks on his verified account and settlement details.

@@ -1,0 +1,309 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Avalanche Pizza - Order Tracking</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&amp;family=Manrope:wght@400&amp;family=Metrophobic&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#5c4037",
+                    "on-secondary": "#3f2e00",
+                    "on-surface-variant": "#e6beb2",
+                    "outline": "#ad897e",
+                    "surface-container-high": "#2a2a2a",
+                    "tertiary": "#ffb4a8",
+                    "primary-container": "#ff571a",
+                    "tertiary-fixed-dim": "#ffb4a8",
+                    "inverse-primary": "#ae3200",
+                    "secondary-fixed-dim": "#fabd00",
+                    "on-primary-container": "#521300",
+                    "inverse-on-surface": "#313030",
+                    "surface-container-low": "#1c1b1b",
+                    "inverse-surface": "#e5e2e1",
+                    "primary-fixed-dim": "#ffb59e",
+                    "surface-tint": "#ffb59e",
+                    "on-error": "#690005",
+                    "error": "#ffb4ab",
+                    "surface-container-highest": "#353534",
+                    "primary-fixed": "#ffdbd0",
+                    "on-tertiary-fixed": "#410000",
+                    "on-secondary-fixed": "#261a00",
+                    "surface-container-lowest": "#0e0e0e",
+                    "on-secondary-container": "#6a4e00",
+                    "surface-container": "#201f1f",
+                    "on-primary-fixed": "#3a0b00",
+                    "on-primary": "#5e1700",
+                    "error-container": "#93000a",
+                    "on-error-container": "#ffdad6",
+                    "tertiary-container": "#fb5945",
+                    "background": "#131313",
+                    "secondary": "#ffdf9e",
+                    "surface-dim": "#131313",
+                    "on-primary-fixed-variant": "#852400",
+                    "tertiary-fixed": "#ffdad4",
+                    "on-tertiary-container": "#5c0000",
+                    "surface": "#131313",
+                    "secondary-container": "#fabd00",
+                    "on-background": "#e5e2e1",
+                    "surface-variant": "#353534",
+                    "primary": "#ffb59e",
+                    "on-tertiary-fixed-variant": "#920703",
+                    "on-surface": "#e5e2e1",
+                    "on-tertiary": "#690000",
+                    "surface-bright": "#393939",
+                    "on-secondary-fixed-variant": "#5b4300",
+                    "secondary-fixed": "#ffdf9e"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "unit": "8px",
+                    "margin-desktop": "64px",
+                    "gutter": "24px",
+                    "container-max": "1280px"
+            },
+            "fontFamily": {
+                    "display-lg": [
+                            "Metrophobic"
+                    ],
+                    "body-md": [
+                            "Manrope"
+                    ],
+                    "label-caps": [
+                            "JetBrains Mono"
+                    ],
+                    "headline-lg": [
+                            "Metrophobic"
+                    ],
+                    "body-lg": [
+                            "Manrope"
+                    ],
+                    "headline-lg-mobile": [
+                            "Metrophobic"
+                    ]
+            },
+            "fontSize": {
+                    "display-lg": [
+                            "48px",
+                            {
+                                    "lineHeight": "1.1",
+                                    "letterSpacing": "0.15em",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "letterSpacing": "0.01em",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-caps": [
+                            "12px",
+                            {
+                                    "lineHeight": "1",
+                                    "letterSpacing": "0.2em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "0.1em",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "letterSpacing": "0.02em",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-lg-mobile": [
+                            "24px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "0.08em",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        .glow-ember {
+            box-shadow: 0 0 20px rgba(255, 181, 158, 0.15);
+        }
+        .status-line::before {
+            content: '';
+            position: absolute;
+            left: 11px;
+            top: 24px;
+            bottom: -8px;
+            width: 1px;
+            background-color: #353534; /* surface-variant */
+            z-index: 0;
+        }
+        .status-step:last-child .status-line::before {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+<!-- TopNavBar (Rendered via JSON directives) -->
+<header class="bg-background dark:bg-background border-b border-outline-variant full-width fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop py-unit max-w-container-max mx-auto h-[80px]">
+<div class="font-display-lg text-display-lg md:text-display-lg text-[24px] tracking-[0.2em] text-on-background dark:text-on-background">
+            AVALANCHE
+        </div>
+<nav class="hidden md:flex gap-gutter items-center">
+<a class="font-display-lg text-[16px] uppercase tracking-[0.15em] text-on-surface dark:text-on-surface hover:text-primary transition-colors duration-300" href="#">ABOUT US</a>
+<a class="font-display-lg text-[16px] uppercase tracking-[0.15em] text-on-surface dark:text-on-surface hover:text-primary transition-colors duration-300" href="#">CORE MENU</a>
+<a class="font-display-lg text-[16px] uppercase tracking-[0.15em] text-on-surface dark:text-on-surface hover:text-primary transition-colors duration-300" href="#">DEALS</a>
+</nav>
+<div class="flex items-center gap-gutter">
+<button class="scale-95 transition-transform hover:text-primary transition-colors duration-300 text-on-surface dark:text-on-surface hidden md:block">
+<span class="material-symbols-outlined" data-icon="shopping_basket">shopping_basket</span>
+</button>
+<a class="font-display-lg text-[16px] uppercase tracking-[0.15em] text-primary dark:text-primary hover:text-primary transition-colors duration-300" href="#">LOGIN</a>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-[144px] pb-margin-desktop px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto w-full flex justify-center">
+<div class="w-full max-w-2xl flex flex-col gap-12">
+<!-- Order Header -->
+<section class="text-center flex flex-col items-center gap-4">
+<span class="font-label-caps text-label-caps text-on-surface-variant">ORDER CONFIRMED</span>
+<h1 class="font-display-lg text-headline-lg-mobile md:text-headline-lg text-on-background">AV-7GK4Q</h1>
+<div class="inline-flex items-center justify-center px-4 py-2 bg-[#1c1b1b] border border-[#2a2a2a] rounded-DEFAULT">
+<span class="font-label-caps text-label-caps text-secondary-fixed-dim">PAID</span>
+</div>
+</section>
+<!-- Unpaid Banner (Hidden by default as per spec, shown here commented out for structural demonstration, but we will leave it in DOM hidden to follow requirements closely, actually user said "hidden by default or shown as an alternative". I will render it hidden.) -->
+<div class="hidden bg-surface-container-high border border-outline-variant p-6 rounded-DEFAULT flex flex-col sm:flex-row justify-between items-center gap-4">
+<span class="font-body-md text-on-surface">Payment not confirmed yet</span>
+<button class="bg-primary text-on-primary font-display-lg uppercase tracking-[0.1em] px-6 py-3 rounded-DEFAULT hover:opacity-90 transition-opacity">RETRY PAYMENT</button>
+</div>
+<!-- Status Timeline -->
+<section class="bg-surface-container border border-surface-container-high rounded-lg p-6 md:p-8">
+<div class="flex flex-col gap-0 relative">
+<!-- Step 1: PAID -->
+<div class="status-step flex gap-6 relative pb-10">
+<div class="status-line relative z-10 flex-shrink-0 w-6 h-6 rounded-full bg-primary flex items-center justify-center mt-1">
+<span class="material-symbols-outlined text-[14px] text-on-primary" data-icon="check" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="flex flex-col pt-1">
+<span class="font-label-caps text-label-caps text-primary">PAID</span>
+<span class="font-body-md text-on-surface-variant text-sm mt-1">Payment processed successfully.</span>
+</div>
+</div>
+<!-- Step 2: PREPARING (Current) -->
+<div class="status-step flex gap-6 relative pb-10">
+<div class="status-line relative z-10 flex-shrink-0 w-6 h-6 rounded-full border border-primary flex items-center justify-center mt-1 glow-ember bg-background">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+</div>
+<div class="flex flex-col pt-1">
+<span class="font-label-caps text-label-caps text-primary">PREPARING</span>
+<span class="font-body-md text-on-surface text-sm mt-1">Estimated delivery: 35–50 min</span>
+</div>
+</div>
+<!-- Step 3: OUT FOR DELIVERY -->
+<div class="status-step flex gap-6 relative pb-10">
+<div class="status-line relative z-10 flex-shrink-0 w-6 h-6 rounded-full border border-surface-variant flex items-center justify-center mt-1 bg-background">
+</div>
+<div class="flex flex-col pt-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant">OUT FOR DELIVERY</span>
+</div>
+</div>
+<!-- Step 4: DELIVERED -->
+<div class="status-step flex gap-6 relative">
+<div class="status-line relative z-10 flex-shrink-0 w-6 h-6 rounded-full border border-surface-variant flex items-center justify-center mt-1 bg-background">
+</div>
+<div class="flex flex-col pt-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant">DELIVERED</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Details Cards -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Delivery Details -->
+<div class="bg-surface-container border border-surface-container-high rounded-DEFAULT p-6 flex flex-col gap-4">
+<h2 class="font-label-caps text-label-caps text-on-surface-variant">DELIVERY DETAILS</h2>
+<div class="font-body-md text-on-surface flex flex-col gap-2">
+<p>Kojo Mensah</p>
+<p>+233 55 123 4567</p>
+<p class="text-on-surface-variant">East Legon, Boundary Road</p>
+<p class="text-on-surface-variant">Near the A&amp;C Mall</p>
+</div>
+</div>
+<!-- Receipt -->
+<div class="bg-surface-container border border-surface-container-high rounded-DEFAULT p-6 flex flex-col gap-4">
+<h2 class="font-label-caps text-label-caps text-on-surface-variant">RECEIPT</h2>
+<div class="flex flex-col gap-3 font-body-md text-sm border-b border-surface-container-high pb-4">
+<div class="flex justify-between">
+<span class="text-on-surface">1x The Inferno Pizza (Large)</span>
+<span class="font-label-caps text-on-surface">GH₵ 120.00</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface">2x Black Garlic Dip</span>
+<span class="font-label-caps text-on-surface">GH₵ 30.00</span>
+</div>
+</div>
+<div class="flex flex-col gap-2 font-body-md text-sm pt-2">
+<div class="flex justify-between text-on-surface-variant">
+<span>Subtotal</span>
+<span class="font-label-caps">GH₵ 150.00</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Delivery Fee</span>
+<span class="font-label-caps">GH₵ 25.00</span>
+</div>
+<div class="flex justify-between items-center mt-2 pt-4 border-t border-surface-container-high">
+<span class="font-label-caps text-on-surface">TOTAL</span>
+<span class="font-label-caps text-lg text-secondary-fixed-dim">GH₵ 175.00</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Help Action -->
+<section class="flex flex-col items-center justify-center gap-4 py-8">
+<span class="font-label-caps text-label-caps text-on-surface-variant">NEED HELP?</span>
+<a class="inline-flex items-center gap-2 font-display-lg uppercase tracking-[0.1em] text-primary hover:text-on-primary hover:bg-primary border border-primary px-6 py-3 rounded-DEFAULT transition-colors duration-300" href="tel:000">
+<span class="material-symbols-outlined text-[18px]" data-icon="call">call</span>
+                    CALL THE KITCHEN
+                </a>
+</section>
+</div>
+</main>
+<!-- Footer (Rendered via JSON directives) -->
+<footer class="bg-background dark:bg-background border-t border-outline-variant w-full py-16 px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-gutter full-width bottom mt-auto">
+<div class="font-display-lg text-[24px] md:text-[32px] text-primary">
+            AVALANCHE
+        </div>
+<nav class="flex gap-gutter items-center">
+<a class="font-label-caps text-label-caps tracking-[0.2em] text-on-surface-variant hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">LOCATIONS</a>
+<a class="font-label-caps text-label-caps tracking-[0.2em] text-on-surface-variant hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">INSTAGRAM</a>
+<a class="font-label-caps text-label-caps tracking-[0.2em] text-on-surface-variant hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">FACEBOOK</a>
+</nav>
+<div class="font-label-caps text-[10px] md:text-label-caps tracking-[0.2em] text-on-surface-variant text-center md:text-right">
+            © 2024 AVALANCHE PIZZA. RISE FROM THE HEAT.
+        </div>
+</footer>
+</body></html>
