@@ -192,10 +192,13 @@ export function DealCardStandard({
           <span className="font-headline-lg text-[28px] tabular text-on-surface">
             {formatPesewas(deal.pricePesewas)}
           </span>
+          {/* Sits beside the price, so it stays compact — but !py-2 rendered
+              it 34px tall, under the touch floor. Taller on touch pointers
+              only, so the desktop card is unchanged. */}
           <AddToBasket
             line={basketLine(deal)}
             variant="outline"
-            className="!px-4 !py-2 !text-[10px]"
+            className="!px-4 !py-2 !text-[10px] pointer-coarse:!py-3.5"
           >
             Add
           </AddToBasket>

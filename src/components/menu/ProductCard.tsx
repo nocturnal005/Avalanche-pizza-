@@ -73,7 +73,14 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         <p className="mb-3 text-center font-label-caps text-lg font-medium tabular text-secondary-container">
           {price}
         </p>
-        <AddToBasket line={basketLine(product)} variant="ghost" className="!py-2 !text-[10px]">
+        {/* !py-2 is the compact bento treatment, and it lands at 34px — too
+            small to tap reliably. Keyed on pointer, not width: a tablet is a
+            touch device well above `sm`. A mouse keeps the drawn design. */}
+        <AddToBasket
+          line={basketLine(product)}
+          variant="ghost"
+          className="!py-2 !text-[10px] pointer-coarse:!py-3.5"
+        >
           Add to Basket
         </AddToBasket>
       </div>

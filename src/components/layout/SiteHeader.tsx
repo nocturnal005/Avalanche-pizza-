@@ -38,7 +38,7 @@ export function SiteHeader({ active = 'none' }: { active?: ActiveRoute }) {
       <div className="flex h-16 w-full items-center justify-between px-margin-mobile lg:h-20 lg:px-margin-desktop">
         <Link
           href="/"
-          className="flex items-center font-headline-lg text-body-lg uppercase tracking-[0.2em] text-on-surface transition-colors hover:text-primary"
+          className="tap-y flex items-center font-headline-lg text-body-lg uppercase tracking-[0.2em] text-on-surface transition-colors hover:text-primary"
         >
           <Image
             src={phoenix}
@@ -59,8 +59,10 @@ export function SiteHeader({ active = 'none' }: { active?: ActiveRoute }) {
           />
         </Link>
 
-        {/* Desktop nav */}
-        <nav aria-label="Main" className="hidden lg:flex lg:items-center lg:gap-gutter">
+        {/* Desktop nav. Gated at md rather than lg: a 768 px tablet has room
+            for the real nav, and leaving it on the phone's scrolling strip
+            spent half the header on something a tablet does not need. */}
+        <nav aria-label="Main" className="hidden md:flex md:items-center md:gap-6 lg:gap-gutter">
           {NAV.map((item) => {
             const isActive = active === item.route;
             return (
@@ -80,24 +82,31 @@ export function SiteHeader({ active = 'none' }: { active?: ActiveRoute }) {
           })}
         </nav>
 
-        <div className="flex items-center gap-4 lg:gap-gutter">
+        <div className="flex items-center gap-3 sm:gap-4 lg:gap-gutter">
           {/* Restored under ADR-009 — there is a real basket again. */}
           <BasketBadge />
+          {/* Was `!hidden sm:!inline-flex`, which hid the secondary ordering
+              channel on phones — the device most of Bechem will use, and the
+              one where a customer is most likely to already be in WhatsApp.
+              It now shows everywhere; below sm it drops to the icon alone so
+              the brand row still fits at 320 px. */}
           <OrderCta
             message={buildGeneralMessage('web/header')}
             variant="outline"
-            className="!hidden !px-4 !py-2 text-[10px] sm:!inline-flex lg:!px-6 lg:text-label-caps"
+            ariaLabel="Order on WhatsApp"
+            className="!px-3 !py-2.5 text-[10px] pointer-coarse:!py-3.5 sm:!px-4 lg:!px-6 lg:text-label-caps"
           >
-            WhatsApp
+            <span className="hidden sm:inline">WhatsApp</span>
           </OrderCta>
         </div>
       </div>
 
-      {/* Mobile nav strip — the exports are desktop-only, so this layout is ours.
-          Two short links need no hamburger, and a hamburger would need JavaScript. */}
+      {/* Phone nav strip — the exports are desktop-only, so this layout is ours.
+          Three short links need no hamburger, and a hamburger would need
+          JavaScript. Hidden from md up, where the real nav takes over. */}
       <nav
         aria-label="Main"
-        className="flex items-center gap-5 overflow-x-auto border-t border-outline-variant/30 px-margin-mobile py-2.5 sm:gap-6 lg:hidden"
+        className="flex items-center gap-5 overflow-x-auto border-t border-outline-variant/30 px-margin-mobile py-2.5 sm:gap-6 md:hidden"
       >
         {NAV.map((item) => {
           const isActive = active === item.route;
@@ -108,8 +117,8 @@ export function SiteHeader({ active = 'none' }: { active?: ActiveRoute }) {
               aria-current={isActive ? 'page' : undefined}
               className={
                 isActive
-                  ? 'shrink-0 font-headline-lg text-[13px] uppercase tracking-[0.12em] text-primary'
-                  : 'shrink-0 font-headline-lg text-[13px] uppercase tracking-[0.12em] text-on-surface-variant'
+                  ? 'tap-y shrink-0 font-headline-lg text-[13px] uppercase tracking-[0.12em] text-primary'
+                  : 'tap-y shrink-0 font-headline-lg text-[13px] uppercase tracking-[0.12em] text-on-surface-variant'
               }
             >
               {item.label}

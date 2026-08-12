@@ -376,6 +376,41 @@
     0 0 22px rgb(0 0 0 / 0.7);
 }
 
+/* ── Touch targets ──────────────────────────────────────────────────────────
+   The Stitch exports are desktop-only, so several controls are drawn at
+   mouse-pointer sizes: 21px nav links, a 20px remove button, 33px basket
+   steppers. Apple asks 44pt, Android 48dp, WCAG 2.5.8 a floor of 24px.
+
+   These utilities grow the HIT AREA without touching the drawn size, so the
+   design is unchanged and the thumb still lands. They apply only under
+   `pointer: coarse` — a mouse does not need the help, and on desktop the
+   invisible pad could swallow clicks meant for a neighbour.
+
+   `.tap` centres a >=44px box on the control, for square icon buttons.
+   `.tap-y` stretches only vertically, for controls already wide enough —
+   growing those sideways would overlap whatever sits beside them. */
+@media (pointer: coarse) {
+  .tap,
+  .tap-y {
+    position: relative;
+  }
+  .tap::after,
+  .tap-y::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    height: max(100%, 44px);
+  }
+  .tap::after {
+    width: max(100%, 44px);
+  }
+  .tap-y::after {
+    width: 100%;
+  }
+}
+
 /* Reduced motion: everything above collapses to a plain, instant, fully
    visible page. Nothing here is load-bearing for reading or ordering. */
 @media (prefers-reduced-motion: reduce) {

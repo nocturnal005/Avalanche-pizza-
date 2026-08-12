@@ -21,14 +21,14 @@ const VARIANTS: Record<Variant, string> = {
   /** 1px outline, fills on hover — the designs' secondary button. */
   outline:
     'border border-outline text-on-surface hover:bg-primary hover:text-on-primary hover:border-primary ' +
-    'px-6 py-3 font-label-caps text-label-caps uppercase',
+    'px-6 py-3 pointer-coarse:py-4 font-label-caps text-label-caps uppercase',
   /** Card-level action: full width, subtle until hover. */
   ghost:
     'w-full border border-outline-variant text-on-surface-variant ' +
     'hover:border-primary hover:text-primary ' +
-    'px-4 py-3 font-label-caps text-label-caps uppercase',
-  /** Inline text link — no chrome. */
-  bare: 'text-primary hover:text-primary-fixed font-label-caps text-label-caps uppercase',
+    'px-4 py-3 pointer-coarse:py-4 font-label-caps text-label-caps uppercase',
+  /** Inline text link — no chrome, so `tap-y` buys the touch height instead. */
+  bare: 'tap-y text-primary hover:text-primary-fixed font-label-caps text-label-caps uppercase',
 };
 
 interface OrderCtaProps {

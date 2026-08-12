@@ -40,11 +40,11 @@ export function BasketClient({ deliveryFeePesewas }: { deliveryFeePesewas: numbe
             type="text"
             placeholder="PROMO CODE"
             aria-label="Promo code"
-            className="w-full border border-surface-container-high bg-surface-container-highest px-4 py-3 font-label-caps text-label-caps text-on-surface placeholder:text-on-surface-variant/50 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+            className="w-full border border-surface-container-high bg-surface-container-highest px-4 py-3 pointer-coarse:py-4 font-label-caps text-label-caps text-on-surface placeholder:text-on-surface-variant/50 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
           />
           <button
             type="button"
-            className="border border-primary px-6 py-3 font-label-caps text-label-caps tracking-[0.1em] whitespace-nowrap text-primary transition-colors hover:bg-primary/10"
+            className="border border-primary px-6 py-3 pointer-coarse:py-4 font-label-caps text-label-caps tracking-[0.1em] whitespace-nowrap text-primary transition-colors hover:bg-primary/10"
           >
             Apply
           </button>
@@ -85,7 +85,7 @@ export function BasketClient({ deliveryFeePesewas }: { deliveryFeePesewas: numbe
 
           <Link
             href="/menu"
-            className="mt-4 flex w-full items-center justify-center py-3 font-label-caps text-label-caps uppercase tracking-[0.2em] text-on-surface-variant transition-colors hover:text-primary"
+            className="mt-4 flex w-full items-center justify-center py-3 pointer-coarse:py-4 font-label-caps text-label-caps uppercase tracking-[0.2em] text-on-surface-variant transition-colors hover:text-primary"
           >
             Continue Shopping
           </Link>
@@ -140,7 +140,7 @@ function LineCard({ line }: { line: BasketLine }) {
             type="button"
             onClick={() => setQty(line.id, line.qty - 1)}
             aria-label={`Decrease ${line.name} quantity`}
-            className="px-3 py-1 text-on-surface-variant transition-colors hover:bg-surface-container-high"
+            className="px-3 py-1 text-on-surface-variant transition-colors hover:bg-surface-container-high pointer-coarse:px-4 pointer-coarse:py-3"
           >
             −
           </button>
@@ -151,7 +151,7 @@ function LineCard({ line }: { line: BasketLine }) {
             type="button"
             onClick={() => setQty(line.id, line.qty + 1)}
             aria-label={`Increase ${line.name} quantity`}
-            className="px-3 py-1 text-on-surface-variant transition-colors hover:bg-surface-container-high"
+            className="px-3 py-1 text-on-surface-variant transition-colors hover:bg-surface-container-high pointer-coarse:px-4 pointer-coarse:py-3"
           >
             +
           </button>
@@ -165,7 +165,11 @@ function LineCard({ line }: { line: BasketLine }) {
           type="button"
           onClick={() => removeLine(line.id)}
           aria-label={`Remove ${line.name} from basket`}
-          className="text-on-surface-variant transition-colors hover:text-error"
+          /* Was a bare 20x20 icon. This is a DESTRUCTIVE control at the size
+             most likely to be hit by accident and hardest to hit on purpose,
+             so it gets the full 44px tap pad on touch devices. The icon is
+             still drawn at 20px. */
+          className="tap text-on-surface-variant transition-colors hover:text-error"
         >
           <Icon name="close" className="size-5" />
         </button>

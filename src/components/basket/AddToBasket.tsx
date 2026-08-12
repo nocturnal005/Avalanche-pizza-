@@ -16,13 +16,23 @@ import { addLine, type BasketLine } from '@/lib/basket/store';
 
 type Variant = 'primary' | 'ghost' | 'outline';
 
+/**
+ * This is the primary conversion control on the site, and it was rendering
+ * 34px tall — under every touch guideline there is.
+ *
+ * The extra padding keys on `pointer-coarse`, NOT on a width breakpoint. A
+ * 768px tablet is a touch device but sits above `sm`, so a viewport rule
+ * would have handed tablets back the 34px button while claiming to have
+ * fixed them. Pointer type is the thing actually being asked about; a mouse
+ * keeps the drawn design exactly as designed.
+ */
 const VARIANTS: Record<Variant, string> = {
   primary:
     'bg-primary-container text-white hover:bg-primary hover:text-on-primary px-8 py-4 font-label-caps text-label-caps uppercase',
   ghost:
-    'w-full border border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary px-4 py-3 font-label-caps text-label-caps uppercase',
+    'w-full border border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary px-4 py-3 pointer-coarse:py-4 font-label-caps text-label-caps uppercase',
   outline:
-    'border border-primary text-primary hover:bg-primary hover:text-on-primary px-6 py-3 font-label-caps text-label-caps uppercase',
+    'border border-primary text-primary hover:bg-primary hover:text-on-primary px-6 py-3 pointer-coarse:py-4 font-label-caps text-label-caps uppercase',
 };
 
 interface AddToBasketProps {

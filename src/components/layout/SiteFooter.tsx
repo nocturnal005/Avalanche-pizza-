@@ -83,7 +83,11 @@ export function SiteFooter() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="cursor-pointer transition-opacity hover:opacity-80"
+                    /* `tap-y`, not `tap`. These sit 8px apart, so a 44px-WIDE
+                       pad would overlap its neighbours and send a tap to the
+                       wrong network — worse than the small target it fixes.
+                       Vertical-only gives 24x44 with no overlap. */
+                    className="tap-y cursor-pointer transition-opacity hover:opacity-80"
                   >
                     {mark}
                   </a>

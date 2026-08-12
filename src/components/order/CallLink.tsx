@@ -15,8 +15,10 @@ type Variant = 'outline' | 'bare';
 const VARIANTS: Record<Variant, string> = {
   outline:
     'border border-outline text-on-surface hover:bg-primary hover:text-on-primary hover:border-primary ' +
-    'px-6 py-3 font-label-caps text-label-caps uppercase',
-  bare: 'text-on-surface-variant hover:text-primary',
+    'px-6 py-3 pointer-coarse:py-4 font-label-caps text-label-caps uppercase',
+  // `bare` is a chrome-less inline link, so padding it would shift the text.
+  // `tap-y` buys the 44px hit area on touch only, drawn size untouched.
+  bare: 'tap-y text-on-surface-variant hover:text-primary',
 };
 
 interface CallLinkProps {

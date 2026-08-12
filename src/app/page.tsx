@@ -99,7 +99,7 @@ export default function HomePage() {
               </div>
               <Link
                 href="/menu"
-                className="group flex shrink-0 items-center gap-2 font-label-caps text-label-caps uppercase tracking-[0.2em] text-primary transition-colors hover:text-primary-container"
+                className="tap-y group flex shrink-0 items-center gap-2 font-label-caps text-label-caps uppercase tracking-[0.2em] text-primary transition-colors hover:text-primary-container"
               >
                 {collection.linkLabel}
                 <Icon

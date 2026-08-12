@@ -23,7 +23,10 @@ export function BasketBadge() {
     <Link
       href="/basket"
       aria-label={count > 0 ? `Basket, ${count} item${count === 1 ? '' : 's'}` : 'Basket, empty'}
-      className="relative flex items-center text-on-surface-variant transition-colors hover:text-primary"
+      /* `tap` grows the hit area to 44px on touch devices only. The icon is
+         still drawn at 24px exactly as designed — a 24px tap target on a
+         phone is simply too small to hit reliably. */
+      className="tap relative flex items-center text-on-surface-variant transition-colors hover:text-primary"
     >
       <Icon name="basket" className="size-6 lg:size-7" />
       <span
