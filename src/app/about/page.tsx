@@ -38,55 +38,57 @@ export default function AboutPage() {
       <main id="main" className="w-full bg-background pt-28 lg:pt-20">
         {/* ── Hero ─────────────────────────────────────────────────────── */}
         <section className="relative flex min-h-[420px] w-full items-center justify-center overflow-hidden px-4 py-20 md:h-[60vh] md:min-h-[500px] md:px-margin-desktop">
-          {/* The looping hero video — owner-supplied, re-encoded to 1.43 MB
-              (720p24 H.264 two-pass 1200kbps, audio stripped, faststart).
-              Rendered as raw markup because React omits the `muted` attribute
-              from server-rendered HTML, and without it in the parsed document
-              mobile browsers refuse to autoplay — this page must move even
-              when JavaScript is late or absent. Muted + playsinline are the
-              autoplay contract.
+          {/* The looping hero video. Rendered as raw markup because React omits
+              the `muted` attribute from server-rendered HTML, and without it in
+              the parsed document mobile browsers refuse to autoplay — this page
+              must move even when JavaScript is late or absent. Muted +
+              playsinline are the autoplay contract.
 
-              NO POSTER, AND NO STILL IMAGE BEHIND IT (owner, 2026-08-11).
-              Both used to point at `about-hero`, so the photograph painted
-              first and was then replaced by the video a moment later — a
-              visible flash on every load. The section's own dark background
-              now covers that gap instead, which reads as the video fading up
-              rather than as one picture swapping for another.
-              `preload="auto"` shortens the gap by fetching the video
-              immediately rather than waiting past its metadata.
+              THE POSTER IS THE VIDEO'S OWN FIRST FRAME (owner, 2026-08-12,
+              "remove any latency"). This is the whole trick, and it resolves
+              what looked like a contradiction with the earlier "kill the flash"
+              request. The original flash was never caused by having a poster —
+              it was caused by the poster being a DIFFERENT photograph
+              (`about-hero`, the restaurant interior), which painted and was
+              then visibly swapped for the video. A poster cut from frame 0 of
+              this exact file cannot flash: when playback starts it continues
+              from a pixel-identical image, so the handover is invisible.
 
-              about-hero-3.mp4 is CROPPED to 1280x564 (owner, 2026-08-11).
-              The generator burned a four-pointed AI sparkle into the pixels
-              at x1150-1205, y570-622 — bottom right, static in all 240
-              frames. It cannot be styled away: any CSS framing trick that
-              hides it at one viewport size lets it back in at another,
-              because object-cover reveals more of the source height as the
-              hero grows. Cropping the file above it is the only fix that
-              holds everywhere. y=564 clears the mark and passes well below
-              every shot's face — the chef sits in the upper half throughout,
-              which was the owner's explicit constraint.
+              What that buys: 24 KB paints in about 0.2s on a 1 Mbps
+              connection, against roughly 8s for the video itself. The hero
+              shows the chef immediately instead of sitting empty while the
+              mp4 streams — and on any device that refuses autoplay outright
+              (iOS Low Power Mode, Android Data Saver) the hero is no longer
+              blank, which was a real hole in the previous version.
 
-              Re-encoded from `avalanche hero video.mp4`, NOT from -2, so
-              there is no second generation of compression. 1.45 MB, the same
-              as the file it replaces, but over 78% of the pixels — about 30%
-              more bits per pixel. New filename because /videos/* is served
-              immutable for a year; an overwrite would never reach anyone.
+              about-hero-4.mp4 is the same 1280x564 crop that removed the
+              generator's AI sparkle watermark (x1150-1205, y570-622 — static
+              in all 240 frames, and un-styleable, because object-cover reveals
+              more source height as the hero grows, so any CSS trick that hides
+              it at one viewport lets it back at another). Re-encoded from
+              `avalanche hero video.mp4` at CRF 28 — NOT from -3, so there is
+              no second generation of compression. 989 KB against 1.45 MB, a
+              34% cut, at SSIM 0.985 versus the file it replaces, which is
+              imperceptible on this footage. New filename because /videos/* is
+              served immutable for a year; an overwrite would never reach a
+              repeat visitor.
 
-              The reduced-motion fallback moved to CSS (globals.css,
-              `.hero-video-fallback`): a background-image inside the
-              prefers-reduced-motion media query is only ever fetched by
-              browsers that match it, so the still costs nothing — not even a
-              request — for everyone else. That is the whole point; a hidden
-              <img> would still have downloaded. */}
+              `preload="auto"` still fetches the video immediately; the poster
+              simply means nobody is looking at nothing while it arrives.
+
+              The reduced-motion fallback (globals.css `.hero-video-fallback`)
+              now points at the same poster rather than the 240 KB
+              `about-hero` still: one image for every path, and a tenth of the
+              bytes. A background-image inside the prefers-reduced-motion
+              query is never fetched by a browser that does not match it, so
+              it stays free for everyone else — which a hidden <img> would
+              not have been. */}
           <div
             className="hero-video-fallback absolute inset-0"
             aria-hidden="true"
-            // Just a string until a reduced-motion browser reads it. Declaring
-            // the URL here rather than in the stylesheet keeps the hashed asset
-            // path resolved by the bundler instead of hand-written.
-            style={{ '--hero-fallback': `url(${image(hero.image).src})` } as React.CSSProperties}
+            style={{ '--hero-fallback': 'url(/videos/about-hero-poster-1.webp)' } as React.CSSProperties}
             dangerouslySetInnerHTML={{
-              __html: `<video class="h-full w-full object-cover object-center motion-reduce:hidden" autoplay loop muted playsinline preload="auto" disablepictureinpicture disableremoteplayback><source src="/videos/about-hero-3.mp4" type="video/mp4"/></video>`,
+              __html: `<video class="h-full w-full object-cover object-center motion-reduce:hidden" autoplay loop muted playsinline preload="auto" poster="/videos/about-hero-poster-1.webp" disablepictureinpicture disableremoteplayback><source src="/videos/about-hero-4.mp4" type="video/mp4"/></video>`,
             }}
           />
           {/* THE FULL-BLEED SCRIM IS GONE (owner, 2026-08-11).
